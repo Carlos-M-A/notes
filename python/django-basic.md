@@ -2,10 +2,8 @@
 
 Django basic notes
 
-[TOC]
 
-
-## Commands
+## COMMANDS
 
 Adding 'python manage.py' ahead:
 
@@ -34,7 +32,7 @@ Adding 'python manage.py' ahead:
 >Remember to use always ` User =  django.contrib.auth.get_user_model()` to get the User class.
 
 
-### DJANGO AUTH
+### Django auth
 
 #### Methods
 * `authenticate(request, username, password) -> User`
@@ -62,13 +60,13 @@ Adding 'python manage.py' ahead:
 `PasswordResetView` also uses `password_reset_email.html` and `password_reset_subject.txt`.
 
 Settings to use:
-`LOGIN_URL`: url of login page. Used by many parts of Django
-`LOGIN_REDIRECT_URL`: where redirects after login. Used by `LoginView`.
-`LOGOUT_REDIRECT_URL`: where redirects after logout. Used by `LogoutView`.
-`DEFAULT_FROM_MAIL`: Email sender email. Used by `PasswordResetView`.
-`PASSWORD_RESET_TIMEOUT`: In seconds. Time until you can reset the password since the email has been sent.
+* `LOGIN_URL`: url of login page. Used by many parts of Django
+* `LOGIN_REDIRECT_URL`: where redirects after login. Used by `LoginView`.
+* `LOGOUT_REDIRECT_URL`: where redirects after logout. Used by `LogoutView`.
+* `DEFAULT_FROM_MAIL`: Email sender email. Used by `PasswordResetView`.
+* `PASSWORD_RESET_TIMEOUT`: In seconds. Time until you can reset the password since the email has been sent.
 
-### CUSTOMIZING AUTH
+### Customizing auth
 
 #### Extending User model. 2 options:
 
@@ -79,15 +77,16 @@ Settings to use:
 * In admin: `admin.site.register(NewCustomUser, django.contrib.auth.admin.UserAdmin)`
 * When refering it, use: `User = auth.get_user_model()`
   * Except in models and signals, where you must use: `settings.AUTH_USER_MODEL`
+* Although it is not common and not recommended, if your custom user model changes the basic fields of `AbstractUser`, you must do too:
+  * Create a specific `UserManager`
+  * Specify `USERNAME_FIELD`
+  * Change `UserCreationForm` and `UserChangeForm`
+  * Register class in admin, withour using `UserAdmin`
+
 2 - OneToOneField pointing to the user model
 * E.g.: model class Profile, with: `user = models.OneToOneField(User, on_delete=models.CASCADE)`
 * `user.profile` for using it
 
-Although it is not common and not recommended, if your custom user model changes the basic fields of `AbstractUser`, you must do too:
-* Create a specific `UserManager`
-* Specify `USERNAME_FIELD`
-* Change `UserCreationForm` and `UserChangeForm`
-* Register class in admin, withour using `UserAdmin`
 
 #### Custom auth backend
 
@@ -151,6 +150,11 @@ def my_view(request):
 ```
 
 When your view inherits from `UserPassesTestMixin`, it must override `test_func()`, where you check if the user is authorized to that request, and return a boolean.
+```python
+class MyView(UserPassesTestMixin, UpdateView):
+    def test_func(self) -> bool:
+      ......
+```
 
 To use `user_passes_test` pass it callables as arguments. Those callabes must be functions that takes an user as argument and return a boolean.
 ```python
@@ -178,14 +182,14 @@ class MyView(PermissionRequiredMixin, View):
 
 ### Django Authorization Best Practices
 
-Best doc:[Custom authorization](https://learndjango.com/tutorials/django-best-practices-user-permissions)
+Best doc: [Custom authorization](https://learndjango.com/tutorials/django-best-practices-user-permissions)
 
 #### In class-based views:
 * Inherits `LoginRequiredMixin`, `UserPassesTestMixin` in that order
 * Override `test_func()`. Within it use `self.request.user` to get the user and `self.get_object()` to get the model instance in that view.
 * (optional) Create authorization.py and place the functions that ckeck the permission there. Those functions must return a boolenan. Call them from `test_func()`.
 * Field `raise_exception = True`.
-Example:
+
 ```python
 class BlogUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Post
@@ -201,7 +205,7 @@ class BlogUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 * @loguin_required
 * Create authorization.py and place the functions for checking permissions there. Those functions must raise a `PermissionDenied` or a `HttpResponseForbidden` if the user isn't allowed for that request.
 * Call functions in authorization.py after getting the objects. 
-Example:
+
 ```python
 #views.py
 @loguin_required
@@ -220,7 +224,72 @@ def check_permissions_my_model_my_view(my_model:MyModel, user:User):
 
 ## TEST
 
+### Commands
+
+test my_app
+test my_app.tests_views
+test my_app.tests.test_views (if you have a 'tests' folder)
+test my_app.test_views.MyViewTestCase
+
+
 ## FILES AND IMAGES
+
+### Uploading files by users
+
+First of all you must:
+* If you are going to store images, install pillow: `pip install pillow`
+* To make your project able to work with files in DEBUG mode, you must add this code at the end of urls.py general file:
+```python
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+```
+Settings must have:
+* `MEDIA_ROOT`: Absolute path to the directory that will hold the files 
+  * It is common:`MEDIA_ROOT = os.path.join(BASE_DIR, 'media')`. For development at least.
+* `MEDIA_URL`: URL that serves the files stored at this location
+
+In models.py:
+* Files: `models.FileField(upload_to='files/')`
+* Images: `models.ImageField(upload_to='images/')`
+* `upload_to` will be the folder within `MEDIA_ROOT` for storing the files.
+
+In templates/HTML:
+* For forms to upload file: modify ´<form>´ to: `<form enctype="multipart/form-data">`
+* To show an image: `<img src="{{profile.images.url}}">`
+
+In forms.py:
+* If ModelForm: Just add the field to Meta class
+* If Form:
+  * Files: `forms.FileField(... widget=forms.FileInput(attr={..})...)`
+  * Images: `forms.ImageField(... widget=forms.FileInput(attr={..})...)`
+  * Keep in mind that `ImageField`'s widget is `FileInput`
+
+In views.py:
+* Add `files=request.FILES` when creating a Form
+  *e.g.: `MyForm(data=request.POST, files=request.FILES, ...)`
+
+### Managing files
+
+Not started.... the File class
+
+## FORMS
+
+A way to organize fields, labels and widgets:
+```python
+MyForm(Form): 
+    class Meta:
+        fields=('...', '...', '...')
+        labels={'...', '...', '...'}
+        widgets={'...':forms.TextInput(attrs={'..':'..', ..}), ....}
+```
+
+## VIEWS
+
+Class based views:
+
+Order methods:
+1 setup() -> 2 dispatch() -> 3 get()
+                          -> 3 post()
 
 ## PACKAGES TO USE
 

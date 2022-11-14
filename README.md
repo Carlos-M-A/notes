@@ -2,11 +2,10 @@
 
 My notes about different technologies and topics in software development
 
-[TOC]
 
 ## Python
 
-- Django: [basic-notes](./django-basic.md)
+- Django: [basic-notes](./python/django-basic.md)
 
 
 ## Others
