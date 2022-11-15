@@ -2,8 +2,9 @@
 
 Django basic notes
 
-Best notes and cheatsheets I found:
-[Django-cheat-sheet](https://dev.to/ericchapman/my-beloved-django-cheat-sheet-2056)
+Other good notes and cheatsheets I found:
+* [Cheat-sheet - dev.to - Eric The Coder](https://dev.to/ericchapman/my-beloved-django-cheat-sheet-2056)
+
 
 ## COMMANDS
 
@@ -82,7 +83,8 @@ class MyModel(models.Model)
 
 ## FORMS
 
-A way to organize fields, labels and widgets:
+
+Alternative way to organize fields, labels and widgets:
 ```python
 MyForm(Form): 
     class Meta:
@@ -132,6 +134,9 @@ Ways to make the HTTP response:
 
 
 ### Class-based views
+
+[Best docs](https://ccbv.co.uk/)
+
 
 #### View:
 Inherit View and implement your methods `get()`, `post()`, etc. that you need.
@@ -603,7 +608,10 @@ In views.py:
 
 Not started.... the File class
 
+	
+## SECURITY
 
+* [Security best practices](https://learndjango.com/tutorials/django-best-practices-security)
 
 ## PACKAGES TO USE
 
