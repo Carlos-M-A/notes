@@ -135,7 +135,9 @@ Ways to make the HTTP response:
 
 #### View:
 Inherit View and implement your methods `get()`, `post()`, etc. that you need.
-<img src="./methods-order-view.png"  width="400" height="150">
+
+<img src="./methods-order-view.png"  width="400" height="200">
+
 
 #### TemplateView
 Field: `template_name`
@@ -150,7 +152,9 @@ Fields:
 * (optional) `context_object_name = "custom_name"` (default: model_name_in_lower_case)
 
 Methods order:
-<img src="./mehods-order-display-views.png"  width="300" height="450">
+
+<img src="./mehods-order-display-views.png"  width="300" height="350">
+
 
 #### Generic editing views: FormView, CreateView, UpdateView, DeleteView
 
@@ -162,7 +166,7 @@ Fields:
 * (optionsl) `initial = {'filed':'data'}`
 
 Methods order:
-<img src="./methods-order-editing-views.png"  width="350" height="550">
+<img src="./methods-order-editing-views.png"  width="400" height="450">
 
 
 ## TEMPLATES
