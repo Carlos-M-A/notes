@@ -2,21 +2,177 @@
 
 Django basic notes
 
+Best notes and cheatsheets I found:
+[Django-cheat-sheet](https://dev.to/ericchapman/my-beloved-django-cheat-sheet-2056)
 
 ## COMMANDS
 
-Adding 'python manage.py' ahead:
+Adding `python manage.py` ahead:
 
 * startproject <project_name>
 * startapp <app_name>
 * makemigrations
 * migrate
 * runserver <addr:port>
+  * Run the django development server. Do NOT use in production
+  * Default ip and port: `127.0.0.1:8000`
+  * To listen on all available public IPs: `runserver 0.0.0.0:8000`
 * test
 * collectstatic
 * check
 * createsuperuser
 * changepassword <username>
+* shell
+  * interactive shell to run code in your django project
+
+
+## URLs
+Functions:
+`django.utls.path(route:str, view:funtion, kwargs:dict, name:str)`
+
+`django.urls.include(app_urls:str)`
+
+Examples:
+`path('my_model/<int:my_model_id>/', views.my_view, name='my_view_name')`
+
+`path('my_app/', include('my_app.urls')),`
+
+
+## MODELS
+
+```python
+from django.db import models
+
+class Customer(models.Model)
+    name = models.Charfield('Customer', max_length=120)
+    age = models.IntegerField()
+    note = models.TextField(blank=True, null = True)
+    email = models.EmailField(max_length=255, blank=True, null=True)
+    credit = models.FloatField(blank=True)
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    # Select Field (return value, display value)
+    TYPE_CHOICES = (
+        ('Customer', 'Customer'),
+        ('Supplier', 'Supplier'),
+        ('Student', 'Student'),
+    )
+    type = models.CharField(choices=TYPE_CHOICES)
+    
+    # relationship
+    # One-to-Many: (use double quotes if the entity is not yet declare) ex. "Supplier"
+    supplier = models.ForeignKey(Supplier, blank=True, null=True, on_delete=models.CASCADE)
+
+    # on_delete can be set to models.CASCADE, models.ST_DEFAULT or models.SET_NULL
+
+    # Many-to-Many: 
+    tags = models.ManyToManyField(Tag, blank=True)
+
+    # One to One 
+    User = models.OneToOneField(User, on_delete=models.CASCADE)
+```
+
+
+## FORMS
+
+A way to organize fields, labels and widgets:
+```python
+MyForm(Form): 
+    class Meta:
+        fields=('...', '...', '...')
+        labels={'...', '...', '...'}
+        widgets={'...':forms.TextInput(attrs={'..':'..', ..}), ....}
+```
+
+## VIEWS
+
+A view it is a function that it is called when a specific url is requested. That function receive at least the `request:HttpRequest` as first argument, and the url parameters (if there are) as second arguments. A view must return a HTTP response.
+
+### Function-based views:
+
+```python
+# urls.py
+`path('my_model/<int:my_model_id>/', views.my_view, name='my_view_name')`
+
+
+# views.py
+def my_view(request, my_model_id):
+  .....
+  .....
+  return HttpResponse("Some response string")
+```
+
+Ways to make the HTTP response:
+* Create django.http.HttpResponse object.
+  * `HttpResponse('Some string')`
+  * `HttpResponse(template.render(context:dict, request:HttpRequest))`
+  * `shortcuts.render(request:HttpRequest, 'path/to/template.html', context)`
+* Raising django.http.Http404 as HTTP response:
+  * `raise Http404('Some text')`
+  * `shortcuts.get_object_or_404(MyModel, pk=id)`
+  * `shortcuts.get_list_or_404(MyModel, filter_parameter=value)`
+* Create a django.http.HttpResponseRedirect (HTTP status code 302)
+  * `HttpResponseRedirect()`
+  * `shortcuts.redirect('/some/url')`
+
+
+### Shortcuts
+
+`render()`
+`redirect()`
+`get_object_or_404()`
+`get_list_or_404()`
+
+
+### Class-based views
+
+#### View:
+Inherit View and implement your methods `get()`, `post()`, etc. that you need.
+![This is an image](./methods-order-view.png)
+
+#### TemplateView
+Field: `template_name`
+Override: `get_context_data()`
+
+#### Generic display views: DetailView, ListView
+
+Fields:
+* `template_name = 'path/to/template.html'`
+* (DetailView) `model = MyModel`
+* (ListViews) `queryset = MyModel.objects.all()
+* (optional) `context_object_name = "custom_name"` (default: model_name_in_lower_case)
+
+Methods order:
+![This is an image](./mehods-order-display-views.png)
+
+#### Generic editing views: FormView, CreateView, UpdateView, DeleteView
+
+Fields:
+* `model = MyModel`
+* `form_class = MyForm`
+* `template_name = 'path/to/template.html'`
+* `success_url = reverse_lazy('my_app:my_view')`
+* (optionsl) `initial = {'filed':'data'}`
+
+Methods order:
+
+![This is an image](./methods-order-editing-views.png)
+
+
+
+## TEMPLATES
+
+`{{ object.field }}`
+
+`{% for object in objects %}  {% endfor %}`
+
+`{% if var1 %} {% elif var1 %} {% else %} {% endif %}`
+
+`href="{% url 'my_app:my_view' object.id %}"`
+
+`<form> {% csrf_token %} </form>`
 
 ## AUTHENTICATION
 
@@ -32,7 +188,7 @@ Adding 'python manage.py' ahead:
 >Remember to use always ` User =  django.contrib.auth.get_user_model()` to get the User class.
 
 
-### Django auth
+### Django Auth
 
 #### Methods
 * `authenticate(request, username, password) -> User`
@@ -399,7 +555,7 @@ In models.py:
 * `upload_to` will be the folder within `MEDIA_ROOT` for storing the files.
 
 In templates/HTML:
-* For forms to upload file: modify ´<form>´ to: `<form enctype="multipart/form-data">`
+* For forms to upload file: modify `<form>` to: `<form enctype="multipart/form-data">`
 * To show an image: `<img src="{{profile.images.url}}">`
 
 In forms.py:
@@ -417,25 +573,7 @@ In views.py:
 
 Not started.... the File class
 
-## FORMS
 
-A way to organize fields, labels and widgets:
-```python
-MyForm(Form): 
-    class Meta:
-        fields=('...', '...', '...')
-        labels={'...', '...', '...'}
-        widgets={'...':forms.TextInput(attrs={'..':'..', ..}), ....}
-```
-
-## VIEWS
-
-Class based views:
-
-Order methods:
-1 setup() -> 2 dispatch() -> 3 get()
-
-                          -> 3 post()
 
 ## PACKAGES TO USE
 
