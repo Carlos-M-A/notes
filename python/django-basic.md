@@ -43,15 +43,19 @@ Examples:
 ```python
 from django.db import models
 
-class Customer(models.Model)
+class OtherModel(models.Model):
+    pass 
+
+class MyModel(models.Model)
     name = models.Charfield('Customer', max_length=120)
-    age = models.IntegerField()
+    age = models.PositiveSmallIntegerField()
     note = models.TextField(blank=True, null = True)
     email = models.EmailField(max_length=255, blank=True, null=True)
-    credit = models.FloatField(blank=True)
+    float_number = models.FloatField(blank=True)
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    quantity = models.PositiveIntegerField(null=True, blank=True)
 
     # Select Field (return value, display value)
     TYPE_CHOICES = (
@@ -61,17 +65,18 @@ class Customer(models.Model)
     )
     type = models.CharField(choices=TYPE_CHOICES)
     
-    # relationship
-    # One-to-Many: (use double quotes if the entity is not yet declare) ex. "Supplier"
-    supplier = models.ForeignKey(Supplier, blank=True, null=True, on_delete=models.CASCADE)
-
-    # on_delete can be set to models.CASCADE, models.ST_DEFAULT or models.SET_NULL
+    # RELATIONSHIPS
+    
+    # Many-to-One:
+    supplier = models.ForeignKey(OtherModel, on_delete=models.CASCADE)
 
     # Many-to-Many: 
-    tags = models.ManyToManyField(Tag, blank=True)
+    tags = models.ManyToManyField(OtherModel, blank=True)
 
     # One to One 
-    User = models.OneToOneField(User, on_delete=models.CASCADE)
+    User = models.OneToOneField(OtherModel, on_delete=models.CASCADE)
+    
+    # on_delete can be set to models.CASCADE, models.ST_DEFAULT or models.SET_NULL
 ```
 
 
@@ -131,6 +136,7 @@ Ways to make the HTTP response:
 #### View:
 Inherit View and implement your methods `get()`, `post()`, etc. that you need.
 ![This is an image](./methods-order-view.png)
+<img src="./methods-order-view.png"  width="300" height="100">
 
 #### TemplateView
 Field: `template_name`
@@ -145,7 +151,11 @@ Fields:
 * (optional) `context_object_name = "custom_name"` (default: model_name_in_lower_case)
 
 Methods order:
+<div style="width:50px; height:50px">
 ![This is an image](./mehods-order-display-views.png)
+</div>
+
+<img src="./mehods-order-display-views.png"  width="300" height="500">
 
 #### Generic editing views: FormView, CreateView, UpdateView, DeleteView
 
@@ -159,7 +169,7 @@ Fields:
 Methods order:
 
 ![This is an image](./methods-order-editing-views.png)
-
+<img src="./methods-order-editing-views.png"  width="200" height="700">
 
 
 ## TEMPLATES
