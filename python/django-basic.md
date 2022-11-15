@@ -153,7 +153,8 @@ Fields:
 
 Methods order:
 
-<img src="./mehods-order-display-views.png"  width="300" height="350">
+<img src="./mehods-order-display-views.png"  width="300" height="250">
+
 
 
 #### Generic editing views: FormView, CreateView, UpdateView, DeleteView
@@ -166,7 +167,9 @@ Fields:
 * (optionsl) `initial = {'filed':'data'}`
 
 Methods order:
-<img src="./methods-order-editing-views.png"  width="400" height="450">
+
+<img src="./methods-order-editing-views.png"  width="400" height="350">
+
 
 
 ## TEMPLATES
