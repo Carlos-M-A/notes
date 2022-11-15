@@ -174,15 +174,35 @@ Methods order:
 
 ## TEMPLATES
 
-`{{ object.field }}`
+In templates you can access objects in send in 'context'. 'user' and 'request' are always accesible.
 
-`{% for object in objects %}  {% endfor %}`
+```
+{{ object.field }}
 
-`{% if var1 %} {% elif var1 %} {% else %} {% endif %}`
+{% for object in objects %}  {% endfor %}
 
-`href="{% url 'my_app:my_view' object.id %}"`
+{% if var1 %} {% elif var1 %} {% else %} {% endif %}
 
-`<form> {% csrf_token %} </form>`
+href="{% url 'my_app:my_view' object.id %}"
+
+<form> {% csrf_token %} </form>
+
+{% include 'header.html' %} 
+
+{% extends 'base.html' %}
+{% block content %}     
+{% endblock %}
+
+{% load static %}
+{% static 'css/main.css' %} 
+
+{{ title | lower }} 
+{{ blog.post | truncatwords:50 }}
+{{ order.date | date:"D M Y" }}
+{{ list_items | slice:":3" }}
+{{ total | default:"nil" }}
+```
+
 
 ## AUTHENTICATION
 
