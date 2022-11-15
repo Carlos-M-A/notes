@@ -202,7 +202,7 @@ class BlogUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 ```
 
 #### In function based views:
-* @loguin_required
+* `@loguin_required`
 * Create authorization.py and place the functions for checking permissions there. Those functions must raise a `PermissionDenied` or a `HttpResponseForbidden` if the user isn't allowed for that request.
 * Call functions in authorization.py after getting the objects. 
 
@@ -260,7 +260,7 @@ Test model class methods, same as a normal python class
 
 #### Testing Forms:
 
-In a form object, test `is_valid()`, 'errors[]` and `save()` methods/fields.
+In a form object, test `is_valid()`, `errors[]` and `save()` methods/fields.
 ```python
 data = {'field1':'data1', 'field2':'data2', ....}
 form = MyForm(data=data)
@@ -347,24 +347,24 @@ self.api_client.get('/mymodel/23', format='json')
 2. Test Models
 3. Test Forms
    * Success case: Correct data. Check:
-     * `form.is_valid()=True`
-     * `len(form.errors)=0`
+     * `form.is_valid()==True`
+     * `len(form.errors)==0`
      * `form.save()` object fields has been change properly.
    * Wrong cases: empty fields, maximum length, incorrect_data. Check: 
      * `form.is_valid()==False`
      * `error['field']==['error text']`
      * `len(form.errors)==NUM_ERRORS`
 4. Test Views
-   * Use self.client.login(username, password) or self.client.force_login()
-   * Use self.client.get() and self.client.post()
+   * Use `self.client.login(username, password)` or `self.client.force_login()`
+   * Use `self.client.get()` and `self.client.post()`
    * Check (pick the needed ones depending of the test): 
-     * resp.status_code == HttpStatus.OK | 404 | 403
-     * self.assertTemplateUsed(resp, PATH_TO_TEMPLATE)
-     * resp.context['object'].field = object.field
-     * type(resp.context['form']) == forms.MyForm
-     * len(resp.context['form'].errors) == NUM_ERRORS
-     * self.assertRedirects()
-     * Data base changes: (Model.objects.get() / filter() / count())
+     * `resp.status_code == HttpStatus.OK | 404 | 403`
+     * `self.assertTemplateUsed(resp, PATH_TO_TEMPLATE)`
+     * `resp.context['object'].field = object.field`
+     * `type(resp.context['form']) == forms.MyForm`
+     * `len(resp.context['form'].errors) == NUM_ERRORS`
+     * `self.assertRedirects()`
+     * Data base changes: (`Model.objects.get()` / `filter()` / `count()`)
    * Test cases:
      1. GET POST Anonymous user -> should redirects to login
      2. GET logged user -> should show template with data and forms
