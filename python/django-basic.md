@@ -222,14 +222,159 @@ def check_permissions_my_model_my_view(my_model:MyModel, user:User):
 ```
 
 
-## TEST
+## TESTS
 
-### Commands
+### Commands and TestCases
 
-test my_app
-test my_app.tests_views
-test my_app.tests.test_views (if you have a 'tests' folder)
-test my_app.test_views.MyViewTestCase
+* `test my_app`
+* `test my_app.tests_views`
+* `test my_app.tests.test_views (if you have a 'tests' folder)`
+* `test my_app.test_views.MyViewTestCase`
+
+test*****.py -> name of every file used for test
+
+Example of tests class:
+```python
+class MyTest(TestCase):
+  @classmethod
+    def setUpTestData(cls) 
+      # Run once, before everything
+    def setUp(self)
+      # Run before every test
+    def tearDown(self)
+      # Run after every test
+    test_1(self) 
+      # every test method name must start with 'test'
+    test_2(self): 
+      self.assert....
+      self.assert...
+```
+In `setUp()`: Every change in the data base will be automatically removed after the test. Thus it isn't needed to do it in `tearDown()`. Place in setUp() the initial commits for the data base.
+
+
+### How to test: Methods to use and data to check
+
+#### Testing Models:
+
+Test model class methods, same as a normal python class
+
+#### Testing Forms:
+
+In a form object, test `is_valid()`, 'errors[]` and `save()` methods/fields.
+```python
+data = {'field1':'data1', 'field2':'data2', ....}
+form = MyForm(data=data)
+self.assertTrue(form.is_valid())
+self.assertEqual(form.errors['field1'],['error with data1'])
+self.assertEqual(len(form.errors), 2)
+object = form.save()
+self.assertEqual(object.field1, 'data1')
+```
+
+#### Testing URLs
+
+Just test if the url from the method `reverse()` is ok.
+```python
+url = reverse('my_app:my_view')
+self.assertEqual(url, '/my_app/my_view/')
+```
+
+#### Testing Views:
+
+Use `self.client` for HTTP requests and to retrieve the response. Check the HTTP response.
+```python
+#Checking redirects in login_required
+response = self.client.get(reverse('my_app:my_view'), follow=True)
+self.assertRedirects(response, reverse('accounts:login') + '?' + urlencode({'next': '/my_app/my_view/'}))
+
+#Checking GET:
+self.client.login(username='user', password='password')
+response = self.client.get(reverse('my_app:my_view', args[NUMBER]))
+self.assertEqual(response.status_code, HTTPStatus.OK)
+self.assertTemplateUsed(response, 'path/to/template/template.html')
+self.assertEqual(response.context['object'].field, 'data_to_check')
+
+# Checking non-existent data:
+self.client.login(username='user', password='password')
+response = self.client.get(reverse('my_app:my_view', args[WRONG_NUMBER]))
+self.assertEqual(response.status_code, 404)
+
+# Checking non-authorized user:
+self.client.login(username='non-authorized-user', password='password')
+response = self.client.get(reverse('my_app:my_view', args[NUMBER]))
+self.assertEqual(response.status_code, 403)
+response = self.client.post(reverse('my_app:my_view', args[NUMBER]))
+self.assertEqual(response.status_code, 403)
+
+# Checking POST:
+self.client.login(username='user', password='password')
+data = {'field1':'wrong-data1', 'field2':'wrong-data2', ....}
+response = self.client.post(reverse('my_app:my_view'), data=data)
+self.assertEqual(response.status_code, HTTPStatus.OK)
+self.assertTemplateUsed(response, 'path/to/template/template.html')
+self.assertEqual(response.context['object'].field, 'data_to_check')
+self.assertEqual(type(response.context['form']), forms.MyForm)
+self.assertEqual(len(response.context['form'].errors), NUM_ERRORS)
+
+# Checking POST valid data:
+self.client.login(username='user', password='password')
+data = {'field1':'data1', 'field2':'data2', ....}
+response = self.client.post(reverse('my_app:my_view'), data=data)
+self.assertRedirects(response, reverse('my_app:other_view'))
+self.assertEqual(User.objects.filter(field='data').count(), NUM_OBJECTS)
+self.assertEqual(User.objects.get(field1='data1').field2, 'data2')
+
+# If you need to check the raw HTML (normaly not necessary
+self.assertIn("stirng to check"), resp,content)
+self.assertContains(resp, "string to check", html=True)
+```
+The response of a client.get() or client,post() is a object with the fields:
+* client
+* content: string with HTML generated
+* context[]: list of objects
+* request: request object used in views
+* status_code: int(200, 404. 403, 500, etc)
+
+#### Testing API:
+Use `self.api_client`:
+```python
+self.api_client.get('/mymodel/23', format='json')
+```
+
+### Testing Best Practices
+
+1. Test URLs
+2. Test Models
+3. Test Forms
+   * Success case: Correct data. Check:
+     * `form.is_valid()=True`
+     * `len(form.errors)=0`
+     * `form.save()` object fields has been change properly.
+   * Wrong cases: empty fields, maximum length, incorrect_data. Check: 
+     * `form.is_valid()==False`
+     * `error['field']==['error text']`
+     * `len(form.errors)==NUM_ERRORS`
+4. Test Views
+   * Use self.client.login(username, password) or self.client.force_login()
+   * Use self.client.get() and self.client.post()
+   * Check (pick the needed ones depending of the test): 
+     * resp.status_code == HttpStatus.OK | 404 | 403
+     * self.assertTemplateUsed(resp, PATH_TO_TEMPLATE)
+     * resp.context['object'].field = object.field
+     * type(resp.context['form']) == forms.MyForm
+     * len(resp.context['form'].errors) == NUM_ERRORS
+     * self.assertRedirects()
+     * Data base changes: (Model.objects.get() / filter() / count())
+   * Test cases:
+     1. GET POST Anonymous user -> should redirects to login
+     2. GET logged user -> should show template with data and forms
+     3. GET POST unauthorised user -> should return 403 error
+     4. GET POST non-existed data -> should return 404 error
+     5. POST blank & incorrect data -> should return form with errors
+     6. POST valid data -> should redirects and change data base
+5. Test APIs (if there are)
+   * Test GET, POST, PUT and DELETE for every URL.
+   * Wrong cases and success case, like in views testing
 
 
 ## FILES AND IMAGES
@@ -289,6 +434,7 @@ Class based views:
 
 Order methods:
 1 setup() -> 2 dispatch() -> 3 get()
+
                           -> 3 post()
 
 ## PACKAGES TO USE
