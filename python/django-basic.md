@@ -29,14 +29,13 @@ Adding `python manage.py` ahead:
 
 ## URLs
 Functions:
-`django.utls.path(route:str, view:funtion, kwargs:dict, name:str)`
-
-`django.urls.include(app_urls:str)`
+* `django.utls.path(route:str, view:funtion, kwargs:dict, name:str)`
+* `django.urls.include(app_urls:str)`
 
 Examples:
-`path('my_model/<int:my_model_id>/', views.my_view, name='my_view_name')`
-
-`path('my_app/', include('my_app.urls')),`
+* `path('my_model/<int:my_model_id>/', views.my_view, name='my_view_name')`
+* `path('my_model/<int:my_model_id>/', views.MyView.as_view(), name='my_view_name')`
+* `path('my_app/', include('my_app.urls')),`
 
 
 ## MODELS
@@ -69,26 +68,81 @@ class MyModel(models.Model)
     # RELATIONSHIPS
     
     # Many-to-One:
-    supplier = models.ForeignKey(OtherModel, on_delete=models.CASCADE)
+    other_model = models.ForeignKey(OtherModel, on_delete=models.CASCADE)
 
     # Many-to-Many: 
-    tags = models.ManyToManyField(OtherModel, blank=True)
+    other_models = models.ManyToManyField(OtherModel, blank=True)
 
     # One to One 
-    User = models.OneToOneField(OtherModel, on_delete=models.CASCADE)
+    other_model_one = models.OneToOneField(OtherModel, on_delete=models.CASCADE)
     
     # on_delete can be set to models.CASCADE, models.ST_DEFAULT or models.SET_NULL
+    
+    # Use a string with the class name if the entity is not yet declare
+    other_model_2 = models.ForeignKey("OtherModel2", on_delete.CASCADE)
+    
+    # Relationship with User model
+    user = models:foreignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    
+class OtherModel2(models.Model):
+    pass
 ```
+
+Define ` def __str__(self): `. This methods will be used in templates, etc.
 
 
 ## FORMS
+
+Fields:
+* (ModelForm) instance
+* errors
+* cleaned_data
+* template_name
+* initial
+* fields
+
+Custom checkings of single fields in `clean_field_name()`, and general checkings in `clean()`. Raise a `ValidationError` if incorrect data. If you want to show more than one error to the user, you can use `add_error()` instead raising `ValidationError`.
+
+```python
+MyForm(forms.ModelForm):
+    class Meta:
+        model = MyModel
+        fields = ['field1', 'field2']
+    
+    def clean_field1(self):
+        field1 = self.cleaned_data['field1']
+        if field1 > 5:
+            raise ValidationError('Error message')
+        return field1
+    
+    def clean_field2(self):
+        field1 = self.cleaned_data['field2']
+            if field2 > 5:
+                self.add_error('field2', 'Error message')
+         return field2
+               
+    def clean(self):
+        return self.cleaned_data
+```
+
+If you want to implement custom behavior in a form, you usually have to override `save()` and/or `is_valid()`. This 2 mehtods the ones called in views.
+```python
+MyForm(forms.ModelForm):
+    class Meta:
+        model = MyModel
+        fields = ['field1', 'field2']
+    
+    def save(self):
+    	self.instance.updatings_count += 1
+        return super().save()
+```
 
 
 Alternative way to organize fields, labels and widgets:
 ```python
 MyForm(Form): 
     class Meta:
-        fields=('...', '...', '...')
+        fields= ['...', '...', '...']
         labels={'...', '...', '...'}
         widgets={'...':forms.TextInput(attrs={'..':'..', ..}), ....}
 ```
@@ -152,9 +206,10 @@ Override: `get_context_data()`
 
 Fields:
 * `template_name = 'path/to/template.html'`
-* (DetailView) `model = MyModel`
-* (ListViews) `queryset = MyModel.objects.all()
-* (optional) `context_object_name = "custom_name"` (default: model_name_in_lower_case)
+* `model = MyModel`
+* (ListViews) `queryset = MyModel.objects.all()`
+* (optional) `context_object_name = "custom_name"`
+  * default: model name in lower case (+ `_list`)
 
 Methods order:
 
@@ -267,7 +322,7 @@ Settings to use:
 * In settings: `AUTH_USER_MODEL` must point to your new user model
 * In admin: `admin.site.register(NewCustomUser, django.contrib.auth.admin.UserAdmin)`
 * When refering it, use: `User = auth.get_user_model()`
-  * Except in models and signals, where you must use: `settings.AUTH_USER_MODEL`
+  * Except in models and signals, where you must use: `settings.AUTH_USER_MODEL`: `user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)`
 * Although it is not common and not recommended, if your custom user model changes the basic fields of `AbstractUser`, you must do too:
   * Create a specific `UserManager`
   * Specify `USERNAME_FIELD`
