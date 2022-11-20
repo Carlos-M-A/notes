@@ -143,7 +143,7 @@ Alternative way to organize fields, labels and widgets:
 MyForm(Form): 
     class Meta:
         fields= ['...', '...', '...']
-        labels={'...', '...', '...'}
+        labels={'...':'...', '...':'...', '...':'...'}
         widgets={'...':forms.TextInput(attrs={'..':'..', ..}), ....}
 ```
 
@@ -434,7 +434,7 @@ Best doc: [Custom authorization](https://learndjango.com/tutorials/django-best-p
 * Inherits `LoginRequiredMixin`, `UserPassesTestMixin` in that order
 * Override `test_func()`. Within it use `self.request.user` to get the user and `self.get_object()` to get the model instance in that view.
 * (optional) Create authorization.py and place the functions that ckeck the permission there. Those functions must return a boolenan. Call them from `test_func()`.
-* Field `raise_exception = True`.
+* Field `raise_exception = False`.
 
 ```python
 class BlogUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
