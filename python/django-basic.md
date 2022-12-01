@@ -195,7 +195,7 @@ Ways to make the HTTP response:
 #### View:
 Inherit View and implement your methods `get()`, `post()`, etc. that you need.
 
-<img src="./methods-order-view.png"  width="400" height="200">
+<img src="./images/methods-order-view.png"  width="400" height="200">
 
 
 #### TemplateView
@@ -213,7 +213,7 @@ Fields:
 
 Methods order:
 
-<img src="./mehods-order-display-views.png"  width="300" height="250">
+<img src="./images/mehods-order-display-views.png"  width="300" height="250">
 
 
 
@@ -228,7 +228,7 @@ Fields:
 
 Methods order:
 
-<img src="./methods-order-editing-views.png"  width="400" height="350">
+<img src="./images/methods-order-editing-views.png"  width="400" height="350">
 
 
 
@@ -261,6 +261,67 @@ href="{% url 'my_app:my_view' object.id %}"
 {{ order.date | date:"D M Y" }}
 {{ list_items | slice:":3" }}
 {{ total | default:"nil" }}
+```
+
+
+## STATIC FILES
+
+Files that don't change and the templates use, like CSS and javascript files, images, audio, etc.
+
+Static files should be in the folder 'static', inside every app. Also, if different apps use some same static files (or if you prefer doing it in this way), you can put everything in a general folder called 'static' in the project folder :
+* `project_name/app1/static/app1/`
+* `project_name/app2/static/app2/`
+* `project_name/static/common_files  project_name/static/app1  project_name/static/app2`
+
+To use them in templates:
+```
+{% load static %}
+{% static 'app1/image.png' %}
+```
+
+In settings:
+* `STATIC_URL`: URL where every static file will be accessible. Relative or absolute.
+* `STATICFILES_DIRS`: Folders where static files are.
+* `STATIC_ROOT`: Folder where static files will be gathered by `collectstatic` command.
+* `django.contrib.staticfiles` must be in included in `INSTALLED_APPS`.
+
+```python
+STATIC_URL = 'static/'
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+STATIC_ROOT = 'staticfiles/'
+```
+With this configuration, you can use static files in debug (development) mode. It works automatically.
+
+For production mode, you can use `python manage.py collectstatic`. It gathers everything in a folder, so you can deploy static files easier where they should be in production. Steps:
+1 Django looks for static files in folders listed in `STATICFILES_DIRS`.
+2 Django looks for in `static` before in `app/static`, and choose the first option if there is a duplicate.
+3 Django gather everything togheter in `STATIC_ROOT` folder.
+
+
+## INITIAL DB DATA SEED (for installation, NOT for test)
+
+Create a file in 'migrations' folder that will be executed after the migrations, and will seed the database. You can use `python manage.py makemigrations --empty yourappname` to create it.
+
+Supponsing that there is already a `0001_initial.py` file in the folder 'migrations' in your app, and that this file contains every migration needed for the app:
+```python
+from django.db import migrations
+
+def initial_data_seed(apps, schema_editor):
+    Assembly = apps.get_model('app_name', 'MyModel')
+    my_model = MyModel()
+    my_model.name_text = 'Name'
+    my_model.description_text = 'Some description'
+    assembly.save()
+
+class Migration(migrations.Migration):
+
+    dependencies = [
+        ('app_name', '0001_initial'),
+    ]
+
+    operations = [
+        migrations.RunPython(initial_data_seed),
+    ]
 ```
 
 
@@ -627,7 +688,7 @@ self.api_client.get('/mymodel/23', format='json')
 
 ### Uploading files by users
 
-First of all you must:
+First of all, you must:
 * If you are going to store images, install pillow: `pip install pillow`
 * To make your project able to work with files in DEBUG mode, you must add this code at the end of urls.py general file:
 ```python
