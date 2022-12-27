@@ -170,7 +170,7 @@ def my_decorator(func):
 You will use this decorator in this way:
 ```python
 @my_decorator
-def_my_function():
+def my_function():
     pass
 ```
 
@@ -179,11 +179,11 @@ If you apply multiple decorators, the decorators will be executed in the order t
 @decor1
 @decor2
 @decor3
-def_my_function():
+def my_function():
     pass
 
 # This is the same
-def_my_function():
+def my_function():
     pass
 
 my_function = decor1(decor2(decor3(my_function)))
@@ -303,8 +303,8 @@ with MessageWriter('my_file.txt') as xfile:
 ```
 
 'with' is normally used in this 2 contexts (not common in other uses):
-1 When working with unmanaged resources (like file streams, database CRUD processes, etc)
-2 When testing with 'pytest' library, to ckeck if a exception was raised
+1. When working with unmanaged resources (like file streams, database CRUD processes, etc)
+2. When testing with 'pytest' library, to ckeck if a exception was raised
 
 ```python
 # 1  resources (sqlite db):
@@ -455,15 +455,18 @@ elif <expr2>:
 elif <expr3>:
     <statements>
 
+
 for <element> in <container>:
     <statements> | break | continue
 else:
     <statements>  #if break not called
 
+
 while <expr>:
     <statements> | break | continue
 else:
     <statements> #if break not called
+
 
 try:
     <statements>
@@ -490,6 +493,7 @@ elif a > 0 and a < 5:
 else:
     pass
 
+
 for x in range(0, 10, 2):
     if x == 4:
         continue
@@ -500,12 +504,14 @@ else:
     print('break was NOT called to exit the loop early')
 # Output: 0, 2, 6
 
+
 while True:
     x = input()
     if x = 2:
         break
 else:
     print('break was NOT called')
+
 
 try:
     print('Here we try statements that can raise exceptions')

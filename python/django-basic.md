@@ -8,9 +8,11 @@ Other good notes and cheatsheets I found:
 
 ## COMMANDS
 
+To create project:
+* django-admin startproject <project_name>
+
 Adding `python manage.py` ahead:
 
-* startproject <project_name>
 * startapp <app_name>
 * makemigrations
 * migrate
