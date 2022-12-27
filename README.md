@@ -5,12 +5,14 @@ My notes about different technologies and topics in software development
 
 ## Python
 
-- Django: [basic-notes](./python/django-basic.md)
+- [Python](./python/python.md)
+- [Django](./python/django-basic.md)
+- [Django Rest framework](./python/django-rest-framework.md)
 
 
 ## Others
 
-- MD files: [example](./others/md-file-example.md)
+- [MD files](./others/md-file-example.md)
 
 
 ## Se also

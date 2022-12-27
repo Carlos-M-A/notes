@@ -190,6 +190,7 @@ class CommentSerializer(serializers.ModelSerializer):
 ## VIEWS - Function based 
 
 Using the @api_view decorator
+
 Other decorators: @csrf_exempt, @renderer_classes, @parser_classes, @authentication_classes, @throttle_classes, @permission_classes
 
 ```python
@@ -206,7 +207,7 @@ def note_list(request):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-@api_view(['GET', 'PUT', 'DELETE'])
+@api_view(['GET', 'PUT', 'PATCH', 'DELETE'])
 def note_detail(request, note_id):
     try:
         note = Note.objects.get(pk=note_id)
@@ -219,6 +220,13 @@ def note_detail(request, note_id):
 
     elif request.method == 'PUT':
         serializer = NoteSerializer(note, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    elif request.method == 'PATCH':
+        serializer = NoteSerializer(note, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
@@ -240,7 +248,7 @@ There are 4 ways of doing class based views
 * To extend concrete views (generics) (like ListCreateAPIView, or RetrieveUpdateAPIView)
 * To extend set views (like ModelViewSet or ReadOnlyModelViewSet)
 
-The most commonly used: APIView, concrete views, and (ReadOnly)ModelViewSet 
+ But in real life, you'll most likely use one of the following:: APIView, concrete views, and (ReadOnly)ModelViewSet 
 
 Policy attributes:
 * renderer_classes: JSONRenderer, BrowsableAPIRenderer, ...
@@ -293,6 +301,14 @@ class NoteDetailApiView(APIView):
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    def patch(self, request, note_id, format=None):
+        note = self.get_object(note_id)
+        serializer = NoteSerializer(note, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
     def delete(self, request, note_id, format=None):
         note = self.get_object(note_id)
         note.delete()
@@ -337,6 +353,9 @@ class NoteDetail(mixins.RetrieveModelMixin,
     def put(self, request, *args, **kwargs):
         return self.update(request, *args, **kwargs)
 
+    def patch(self, request, *args, **kwargs):
+        return self.partial_update(request, *args, **kwargs)
+
     def delete(self, request, *args, **kwargs):
         return self.destroy(request, *args, **kwargs)
 ```
@@ -374,9 +393,9 @@ class NoteDetail(generics.RetrieveUpdateDestroyAPIView):
 * ModelViewSet
 
 Actions:
-* list: GET-multiple
+* list: GET (multiple)
 * create: POST
-* retrieve: GET-single (pk needed)
+* retrieve: GET (single) (pk needed)
 * update: PUT (pk needed)
 * partial_update: PATCH (pk needed)
 * destroy: DELETE (pk needed)
@@ -392,9 +411,6 @@ class NoteViewSet(viewsets.ModelViewSet):
     """
     queryset = Note.objects.all()
     serializer_class = NoteSerializer
-
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
 ```
 
 Then in urls.py:
@@ -410,17 +426,16 @@ note_detail = NoteViewSet.as_view({
     'patch': 'partial_update',
     'delete': 'destroy'
 })
-path('snippets/', snippet_list, name='snippet-list'),
-path('snippets/<int:pk>/', snippet_detail, name='snippet-detail'),
+path('notes/', note_list, name='note-list'),
+path('notes/<int:pk>/', note_detail, name='note-detail'),
 ```
 
 ### Routers
  ```python
 router = routers.DefaultRouter()
-router.register(r'custom-viewset', NoteViewSet)
+router.register('notes', NoteViewSet)
 
 urlpatterns = [
-    path('change-user-info', ChangeUserInfo.as_view()),
     path('', include(router.urls)),
 ]
 ```
