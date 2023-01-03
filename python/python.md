@@ -192,7 +192,7 @@ my_function = decor1(decor2(decor3(my_function)))
 
 ## GENERATORS AND ITERATORS
 
-A generator is a function that returns a iterable object of the class 'generator' (every function that uses yield returns a iterable object, not a variable). Iterator is a class that implements the two magic methods required to be iterable:`__iter__()` and `__next__()`
+A generator is a function that returns a iterable object of the class 'generator' (every function that uses `yield` returns a iterable object, not a variable). Iterator is a class that implements the two magic methods required to be iterable:`__iter__()` and `__next__()`
 
 ```python
 # GENERATOR: function that uses yield
@@ -258,7 +258,7 @@ with <context manager> as <var>:
     <statements>
 ```
 
-'with' statement can be used in exception handling to make the code cleaner and much more readable. Try-except is more common though.
+`with` statement can be used in exception handling to make the code cleaner and much more readable. `Try-except` is more common though.
 
 ```python
 # file handling
@@ -280,7 +280,7 @@ with open('file_path', 'w') as file:
     file.write('hello world !')
 ```
 
-To use with statement in user defined objects you only need to add the methods `__enter__()` and `__exit__()` in the object methods:
+To use `with` statement in user defined objects you only need to add the methods `__enter__()` and `__exit__()` in the object methods:
 
 ```python
 # a simple file writer object
@@ -302,7 +302,7 @@ with MessageWriter('my_file.txt') as xfile:
     xfile.write('hello world')
 ```
 
-'with' is normally used in this 2 contexts (not common in other uses):
+`with` is normally used in this 2 contexts (not common in other uses):
 1. When working with unmanaged resources (like file streams, database CRUD processes, etc)
 2. When testing with 'pytest' library, to ckeck if a exception was raised
 
@@ -352,8 +352,8 @@ True
 
 
 ### is, is not
- * 'is' evaluates to True if the variables on either side of the operator point to the same object and false otherwise. Used to check True, False or None
- * 'is not' evaluates True if both variables are not the same object.
+ * `is` evaluates to True if the variables on either side of the operator point to the same object and false otherwise. Used to check `True`, `False` or `None`
+ * `is not` evaluates `True` if both variables are not the same object.
 
 ```python
 >>> a = [1, 2, 3]
@@ -376,7 +376,7 @@ False
 
 ### is, is not, ==, !=
 
-'is' is used in Python for testing object identity. While the '==' operator is used to test if two variables are equal or not, 'is' is used to test if the two variables refer to the same object.
+`is` is used in Python for testing object identity. While the `==` operator is used to test if two variables are equal or not, `is` is used to test if the two variables refer to the same object.
 
 ```python 
 >>> [] == []
@@ -424,7 +424,7 @@ True
 False
 ```
 
-Use 'is' and 'is not' with 'True', 'False' and 'None' to avoid hidden mistakes:
+Use `is` and `is not` with `True`, `False` and `None` to avoid hidden mistakes:
 
 ```python
 >>> d = True

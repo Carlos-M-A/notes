@@ -3,9 +3,6 @@
 Django REST Framework notes
 
 Other good notes and cheatsheets I found:
-* [testdriven.io Spela 1](https://testdriven.io/blog/drf-views-part-1/)
-* [testdriven.io Spela 2](https://testdriven.io/blog/drf-views-part-2/)
-* [testdriven.io Spela 3](https://testdriven.io/blog/drf-views-part-3/)
 
 [github Nifled](https://github.com/Nifled/drf-cheat-sheet)
 
@@ -240,6 +237,10 @@ def note_detail(request, note_id):
 
 ## VIEWS - Class based
 
+* [testdriven.io Spela 1](https://testdriven.io/blog/drf-views-part-1/)
+* [testdriven.io Spela 2](https://testdriven.io/blog/drf-views-part-2/)
+* [testdriven.io Spela 3](https://testdriven.io/blog/drf-views-part-3/)
+
 <img src="./images/drf-views.png"  width="800" height="700">
 
 There are 4 ways of doing class based views
@@ -316,7 +317,7 @@ class NoteDetailApiView(APIView):
 ```
 
 
-### Mixins
+### Mixins & Generic
 
 Attributtes:
 * queryset
@@ -385,7 +386,7 @@ class NoteDetail(generics.RetrieveUpdateDestroyAPIView):
 ```
 
 
-## Viewsets
+### ViewSets
 
 * ViewSet
 * GenericViewSet
@@ -402,7 +403,6 @@ Actions:
 
 You can also create custom actions with the `@action` decorator.
 
-
 ```python
 class NoteViewSet(viewsets.ModelViewSet):
     """
@@ -411,6 +411,9 @@ class NoteViewSet(viewsets.ModelViewSet):
     """
     queryset = Note.objects.all()
     serializer_class = NoteSerializer
+    
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
 ```
 
 Then in urls.py:
@@ -430,7 +433,24 @@ path('notes/', note_list, name='note-list'),
 path('notes/<int:pk>/', note_detail, name='note-detail'),
 ```
 
-### Routers
+### Other things with generic, concrete and viewsets
+
+For custom behavior on creating(POST), you must override `perform_create(self, serializer)`.
+```python
+class MessageViewSet(viewsets.ModelViewSet):
+    queryset = Message.objects.all()
+    serializer_class = MessageSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)
+```
+
+The same is possible with `perform_update(self, serializer)` and `perform_destroy(self, instance)`
+
+
+#### Routers
+
+Routers are used for creating the urls for ViewSets
  ```python
 router = routers.DefaultRouter()
 router.register('notes', NoteViewSet)
@@ -457,6 +477,216 @@ if serializer.is_valid():
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 ```
+
+
+## AUTHENTICATION
+
+* [DRF docs](https://www.django-rest-framework.org/api-guide/authentication/)
+* [DRF auth 1] (https://ilovedjango.com/django/rest-api-framework/authentication/authentication-django-rest-framework/)
+* [DRF JWT](https://simpleisbetterthancomplex.com/tutorial/2018/12/19/how-to-use-jwt-authentication-with-django-rest-framework.html)
+
+There are 5 types of authentications
+* BasicAuthentication
+* SessionAuthentication
+* TokenAuthentication
+* RemoteUserAuthentication
+* JWT - JSON Web Token Authentication (You need aditional packages)
+
+Setting authentication __globally__:
+```python
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+               'rest_framework.authentication.BasicAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES':(
+                'rest_framework.permissions.IsAuthenticated',
+    ),
+}
+```
+
+Setting authentication __per view__ (__class based__):
+```python
+class ClassBasedView(APIView):
+    authentication_classes = [BasicAuthentication]
+    permission_classes = [IsAuthenticated]
+```
+
+Setting authentication __per view__ (__function based__)
+```python
+@authentication_classes([BasicAuthentication])
+@permission_classes([IsAuthenticated])
+def function_based_view(request, format=None):
+    pass
+```
+
+### BasicAuthentication
+
+* we need to send the username and password for every request
+* It uses HTTP header: "Authorization":"Basic <base64(username:password)>"
+* Don't use in production (if you do it anyway, always with https)
+* It needs to get and send csrf token cookie (csrftoken)
+* You shouldn't never used Basic for production, only in testing-development
+
+### SessionAuthentication
+
+* We need to send username and password at initial request. Then from server response we get the session id cookie (sessionid) which stores in browser and gonna use that for requests.
+* It uses HTTP header: "Authorization Basic <token_string>" and the cookie "sessionid"
+* It needs to get and send csrf token cookie (csrftoken)
+* Good option if you only use the API from a browser
+* The server has to store session data for every user and this increase the overhead.
+
+### TokenAuthentication
+
+* We need to send username and password at initial request. Then from server response we get the token and gonna use that for requests
+* It uses HTTP header: "Authorization: Token <token-string>"
+* It does NOT need to get and send any csrf token. The auth token does that function as well.
+* Best option, specially if the API will be consumed from mobile or desktop apps
+
+To use TokenAuthentication, you need to add `rest_framework.authtoken` to `INSTALLED_APPS`, in settings.py.
+
+To request an authentication token using their username and password, use `ObtainAuthToken` or `obtain_auth_token()`
+```python
+# Add this to setting.py
+import rest_framework.authtoken.views
+path('api-token-auth/', views.obtain_auth_token, name='api-token-auth'),
+```
+By default, there are no permissions or throttling applied to the obtain_auth_token view. If you do wish to apply to throttle you'll need to override the view class, and include them using the throttle_classes attribute.
+
+
+### RemoteUserAuthentication
+
+* Rarely used. Primarly for intranets sites (private networks)
+* This authentication scheme allows you to delegate authentication to your web server, which sets the REMOTE_USER environment variable. Remote authentication passes the responsibility of verifying a user's identity to a third party. Most of the time, the third party is a centralized single sign-on server that supports a protocol such as LDAP, CAS, or SAML.
+* To use it, you must have django.contrib.auth.backends.RemoteUserBackend (or a subclass) in your AUTHENTICATION_BACKENDS setting
+
+
+### JWT - JSON Web Token Authentication
+
+* You need to install `rest_framework_simplejwt`
+* It uses HTTP header: "Authorization: Bearer <token-string>"
+* It does NOT need to get and send any csrf token.
+
+Setting:
+```python
+# settings.py
+INSTALLED_APPS = [
+    'rest_framework',
+    'rest_framework_simplejwt'
+]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ],
+}
+
+# urls.py
+from django.urls import path
+from rest_framework_simplejwt import views as jwt_views
+
+urlpatterns = [
+    path('api/token/', jwt_views.TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', jwt_views.TokenRefreshView.as_view(), name='token_refresh'),
+]
+```
+
+
+## AUTHORIZATION - PERMISSIONS
+
+* [drf permissions](https://testdriven.io/blog/drf-permissions/)
+* [drf built-in permissions](https://testdriven.io/blog/built-in-permission-classes-drf/)
+* [drf custom permissions](https://testdriven.io/blog/custom-permission-classes-drf/)
+
+
+### Built-in DRF Permission Classes
+
+* AllowAny
+* IsAuthenticated
+* IsAuthenticatedOrReadOnly
+* IsAdminUser
+* DjangoModelPermissions
+* DjangoModelPermissionsOrAnonReadOnly
+* DjangoObjectPermissions (you'll need a permission backend that supports object-level permissions, like django-guardian)
+
+
+### Custom Permissions
+
+* Extends `permissions.BasePermission`
+* Override `has_permission(self, request, view)->bool`: To check if the user has model permissions.
+* Override `has_object_permission(self, request, view, obj)->bool`:  To check if the user has object permissions.
+* (optional) Declare `message` attribute of custom error message
+
+```python
+class CustomPermission(BasePermission):
+    def has_permission(self, request, view) -> bool:
+        return True
+    def has_object_permission(self, request, view, obj) -> bool:
+        return True
+
+```
+
+When you use it, keep in mind:
+* With an `APIView`, you must explicitly call `check_object_permission` to execute `has_object_permission` for all permission classes. 
+* You don't need to do it with generic/concrete views and ViewSets. This will be handled for you by default. 
+* Function-based views will need to check object permissions explicitly, raising PermissionDenied on failure.
+* `has_permission` and `has_object_permission` will return `True` if you don't override them.
+* `has_permission` is called before `has_object_permission`
+* `has_object_permission` is never executed for list views (regardless of the view you're extending from) or when the request method is POST (since the object doesn't exist yet). Hence we need to restrict it from `has_permission method`.
+* You will normally check `request.method`, `request.user`, `obj.owner` and `view.basename`
+* Better use `permissions.SAFE_METHODS` for ('GET', 'HEAD', 'OPTIONS')
+
+<img src="./images/drf_custom_permission_order.png"  width="500" height="550">
+
+Example:
+```python
+class IsStaffAndOwnerOrReadOnly(BasePermission):
+
+    def has_permission(self, request, view):
+        return request.user.is_staff
+
+    def has_object_permission(self, request, view, obj):
+        if request.method in SAFE_METHODS:
+            return True
+        return obj.owner == request.user
+
+
+class NoteDetailConcrete(generics.RetrieveUpdateDestroyAPIView):
+    queryset = MyModel.objects.all()
+    serializer_class = MyModelSerializer
+    permission_classes = [IsAuthenticated, IsStaffAndOwnerOrReadOnly]
+```
+
+For global permissions:
+```python
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ]
+}
+```
+`DEFAULT_PERMISSION_CLASSES` will only work for the views or objects that don't have permissions explicitly set.
+
+
+### Combining and Excluding Permission Classes
+
+Normally you use this (This approach combines them so that permission is granted only if all of the classes return `True`):
+`permission_classes = [IsAuthenticated, IsStaff, SomeCustomPermissionClass]`
+
+Since DRF 3.9, you can combine permission classes using AND (`&`), OR (`|`) and NOT (`~`) logical operators. And  parentheses (`()`) as well:
+`permission_classes = [(IsFinancesMember | ~IsTechMember) & IsOwner]`
+
+
+### Best practices
+
+If you are using the Django's standard django.contrib.auth model permissions (view, add, change, delete). Just use `DjangoModelPermissions` and `DjangoModelPermissionsOrAnonReadOnly`. Add permissions to users or groups via admin view.
+
+But, normally, you will use custom permissions. Then:
+* Create your custom authentication classes in `permissions.py`
+* Use always `IsAuthenticated`
+* `permission_classes: First `IsAuthenticated`, then your custom permission classes in order of importance
+* If the view is unrestricted, use `AllowAny` to make it explicit
+* Use `IsAdminUser` if needed 
+
 
 ## TESTING
 
