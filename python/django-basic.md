@@ -429,14 +429,14 @@ For every model there are 4 types of permissions/actions: view, add, change, del
 Permission naming sequence: {app}.{action}_{model_name}
 
 To modify permissions:
-myuser.groups.set([group_list])
-myuser.groups.add(group, group, ...)
-myuser.groups.remove(group, group, ...)
-myuser.groups.clear()
-myuser.user_permissions.set([permission_list])
-myuser.user_permissions.add(permission, permission, ...)
-myuser.user_permissions.remove(permission, permission, ...)
-myuser.user_permissions.clear()
+* myuser.groups.set([group_list])
+* myuser.groups.add(group, group, ...)
+* myuser.groups.remove(group, group, ...)
+* myuser.groups.clear()
+* myuser.user_permissions.set([permission_list])
+* myuser.user_permissions.add(permission, permission, ...)
+* myuser.user_permissions.remove(permission, permission, ...)
+* myuser.user_permissions.clear()
 
 
 ### Decorators and Mixins

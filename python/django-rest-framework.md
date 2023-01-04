@@ -186,9 +186,9 @@ class CommentSerializer(serializers.ModelSerializer):
 
 ## VIEWS - Function based 
 
-Using the @api_view decorator
+Using the `@api_view` decorator
 
-Other decorators: @csrf_exempt, @renderer_classes, @parser_classes, @authentication_classes, @throttle_classes, @permission_classes
+Other decorators: `@csrf_exempt`, `@renderer_classes`, `@parser_classes`, `@authentication_classes`, `@throttle_classes`, `@permission_classes`
 
 ```python
 @api_view(('GET','POST'))
@@ -249,7 +249,7 @@ There are 4 ways of doing class based views
 * To extend concrete views (generics) (like ListCreateAPIView, or RetrieveUpdateAPIView)
 * To extend set views (like ModelViewSet or ReadOnlyModelViewSet)
 
- But in real life, you'll most likely use one of the following:: APIView, concrete views, and (ReadOnly)ModelViewSet 
+ But in real life, you'll __most likely use__ one of the following: __APIView, concrete views, and (ReadOnly)ModelViewSet__
 
 Policy attributes:
 * renderer_classes: JSONRenderer, BrowsableAPIRenderer, ...
@@ -433,6 +433,20 @@ path('notes/', note_list, name='note-list'),
 path('notes/<int:pk>/', note_detail, name='note-detail'),
 ```
 
+
+#### Routers
+
+Routers are used for creating the urls for ViewSets
+ ```python
+router = routers.DefaultRouter()
+router.register('notes', NoteViewSet)
+
+urlpatterns = [
+    path('', include(router.urls)),
+]
+```
+
+
 ### Other things with generic, concrete and viewsets
 
 For custom behavior on creating(POST), you must override `perform_create(self, serializer)`.
@@ -448,19 +462,6 @@ class MessageViewSet(viewsets.ModelViewSet):
 The same is possible with `perform_update(self, serializer)` and `perform_destroy(self, instance)`
 
 
-#### Routers
-
-Routers are used for creating the urls for ViewSets
- ```python
-router = routers.DefaultRouter()
-router.register('notes', NoteViewSet)
-
-urlpatterns = [
-    path('', include(router.urls)),
-]
-```
-
-
 ## Requests and Responses
 
 DRF Request extends HttpRequest
@@ -473,16 +474,17 @@ DRF Response extends HttpResponse
 Response object is a type of TemplateResponse that takes unrendered content and uses content negotiation to determine the correct content type to return to the client.
 ```python
 if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    serializer.save()
+    return Response(serializer.data, status=status.HTTP_201_CREATED)
+return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 ```
 
 
 ## AUTHENTICATION
 
+Usefull links:
 * [DRF docs](https://www.django-rest-framework.org/api-guide/authentication/)
-* [DRF auth 1] (https://ilovedjango.com/django/rest-api-framework/authentication/authentication-django-rest-framework/)
+* [DRF auth 1](https://ilovedjango.com/django/rest-api-framework/authentication/authentication-django-rest-framework/)
 * [DRF JWT](https://simpleisbetterthancomplex.com/tutorial/2018/12/19/how-to-use-jwt-authentication-with-django-rest-framework.html)
 
 There are 5 types of authentications
@@ -522,23 +524,23 @@ def function_based_view(request, format=None):
 ### BasicAuthentication
 
 * we need to send the username and password for every request
-* It uses HTTP header: "Authorization":"Basic <base64(username:password)>"
+* It uses HTTP header: __"Authorization":"Basic <base64(username:password)>"__
 * Don't use in production (if you do it anyway, always with https)
-* It needs to get and send csrf token cookie (csrftoken)
+* It needs to get and send csrf token cookie (__csrftoken__)
 * You shouldn't never used Basic for production, only in testing-development
 
 ### SessionAuthentication
 
 * We need to send username and password at initial request. Then from server response we get the session id cookie (sessionid) which stores in browser and gonna use that for requests.
-* It uses HTTP header: "Authorization Basic <token_string>" and the cookie "sessionid"
-* It needs to get and send csrf token cookie (csrftoken)
+* It uses HTTP header: __"Authorization Basic <token_string>"__ and the __cookie "sessionid"__
+* It needs to get and send csrf token cookie (__csrftoken__)
 * Good option if you only use the API from a browser
 * The server has to store session data for every user and this increase the overhead.
 
 ### TokenAuthentication
 
 * We need to send username and password at initial request. Then from server response we get the token and gonna use that for requests
-* It uses HTTP header: "Authorization: Token <token-string>"
+* It uses HTTP header: __"Authorization: Token <token-string>"__
 * It does NOT need to get and send any csrf token. The auth token does that function as well.
 * Best option, specially if the API will be consumed from mobile or desktop apps
 
@@ -563,7 +565,7 @@ By default, there are no permissions or throttling applied to the obtain_auth_to
 ### JWT - JSON Web Token Authentication
 
 * You need to install `rest_framework_simplejwt`
-* It uses HTTP header: "Authorization: Bearer <token-string>"
+* It uses HTTP header: __"Authorization: Bearer <token-string>"__
 * It does NOT need to get and send any csrf token.
 
 Setting:
@@ -593,6 +595,7 @@ urlpatterns = [
 
 ## AUTHORIZATION - PERMISSIONS
 
+Usefull links:
 * [drf permissions](https://testdriven.io/blog/drf-permissions/)
 * [drf built-in permissions](https://testdriven.io/blog/built-in-permission-classes-drf/)
 * [drf custom permissions](https://testdriven.io/blog/custom-permission-classes-drf/)
@@ -672,18 +675,18 @@ REST_FRAMEWORK = {
 Normally you use this (This approach combines them so that permission is granted only if all of the classes return `True`):
 `permission_classes = [IsAuthenticated, IsStaff, SomeCustomPermissionClass]`
 
-Since DRF 3.9, you can combine permission classes using AND (`&`), OR (`|`) and NOT (`~`) logical operators. And  parentheses (`()`) as well:
+Since DRF 3.9, you can combine permission classes using __AND (`&`)__, __OR (`|`)__, __NOT (`~`)__ and  __parentheses (`()`)__ logical operators:
 `permission_classes = [(IsFinancesMember | ~IsTechMember) & IsOwner]`
 
 
 ### Best practices
 
-If you are using the Django's standard django.contrib.auth model permissions (view, add, change, delete). Just use `DjangoModelPermissions` and `DjangoModelPermissionsOrAnonReadOnly`. Add permissions to users or groups via admin view.
+__Django model permissions__: If you are using the Django's standard django.contrib.auth model permissions (view, add, change, delete). Just use `DjangoModelPermissions` and `DjangoModelPermissionsOrAnonReadOnly`. Add permissions to users or groups via admin view.
 
-But, normally, you will use custom permissions. Then:
+But, normally, you will use __custom permissions__. Then:
 * Create your custom authentication classes in `permissions.py`
 * Use always `IsAuthenticated`
-* `permission_classes: First `IsAuthenticated`, then your custom permission classes in order of importance
+* `permission_classes`: First `IsAuthenticated`, then your custom permission classes in order of importance
 * If the view is unrestricted, use `AllowAny` to make it explicit
 * Use `IsAdminUser` if needed 
 
