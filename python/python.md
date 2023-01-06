@@ -133,7 +133,7 @@ class SomeClass(object):
     ########################
     #    Public Methods    #
     ########################
-    def a_method(self):
+    def public_method(self):
         "public methods, in order of importance"
 
     ########################
@@ -145,7 +145,7 @@ class SomeClass(object):
     ########################
     #     Magic Methods    #
     ########################
-    def __magic_methods__(self):
+    def __magic_method__(self):
         "magic methods last"
 
 ```
@@ -454,6 +454,8 @@ elif <expr2>:
     <statements>
 elif <expr3>:
     <statements>
+else:
+    <statements>
 
 
 for <element> in <container>:
@@ -518,7 +520,7 @@ try:
 except Error1:
     print('Error1 raised')
 else:
-    print('There is no exception')
+    print('There was no raised exception')
 finally:
     print('This is always executed')
 ```

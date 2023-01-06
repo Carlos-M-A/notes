@@ -103,8 +103,8 @@ class SimpleSerializer(serializers.Serializer):
     instance = model_object.save()
     return instance
 
-  # def validate_<field>(self, name):
-  def validate_name(self, name):
+  # def validate_<field>(self, value):
+  def validate_name(self, value):
     if not name:
       raise serializers.ValidationError('Name required')
     ...
