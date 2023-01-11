@@ -7,6 +7,27 @@ Other good notes and cheatsheets I found:
 [github Nifled](https://github.com/Nifled/drf-cheat-sheet)
 
 
+## MODELS USED FOR EXAMPLES
+
+```python
+# Articles and its notes
+
+class Article(models.Model):
+    title = models.CharField(max_length=50)
+    text = models.TextField(blank=True)
+    created_at =  models.DateTimeField()
+
+class Note(models.Model):
+    title = models.CharField(max_length=50)
+    text = models.CharField(max_length=256)
+    created_at =  models.DateTimeField()
+    article = models.ForeignKey(Article, related_name='notes', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return str(self.title) + ' - ' + str(created_at)
+
+```
+
 ## BASIC
 
 DRF is composed of the following two components:
@@ -118,6 +139,7 @@ class SimpleSerializer(serializers.Serializer):
     return validated_data
 ```
 
+
 ### ListSerializer
 
 The `ListSerializer` class provides the behavior for serializing and validating multiple objects at once. You won't typically need to use `ListSerializer` directly, but should instead simply pass `many=True` when instantiating a serializer.
@@ -137,51 +159,181 @@ ModelSerializer classes are simply a shortcut for creating serializer classes:
 * Simple default implementations for the create() and update() methods.
 
 ```python
-class CommentSerializer(serializers.ModelSerializer):
+class NoteSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Comment
-        fields = ('id', 'title', 'text', 'created')
-        read_only_fields = ('crated',)
+        model = Note
+        fields = ['id', 'text']
+        read_only_fields = ['id',]
 ```
 
-### HyperlinkedModelSerializer
+__class Meta attributes__:
+* model (class)
+* fields (list)
+* depth (int)
+* read_only_fields (list)
+* exclude (list)
+* extra_kwargs (dict)
+
+
+#### HyperlinkedModelSerializer
 ```python
 class ArticleSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Article
-        fields = ('id', 'title', 'text', 'created', 'comments')
-        read_only_fields = ('comments',)
+        fields = ['id', 'title', 'text', 'created_at', 'notes']
+        read_only_fields = ['id','notes',]
 ```
 
 Other way:
 ```python
 class ArticleSerializer(serializers.ModelSerializer):
-    comments = serializers.HyperlinkedRelatedField(many=True, view_name='comment-detail', read_only=True)
+    notes = serializers.HyperlinkedRelatedField(many=True, view_name='note-detail', read_only=True)
     
     class Meta:
         model = Article
-        fields = ('id', 'title', 'text', 'created', 'comments')
+        fields = ('id', 'title', 'text', 'created_at', 'notes')
 ```
 
-### Nested serialization
+#### Relationships
 
-__General__:
+Remember to use `related_name=''` in model relationship fields, to avoid errors.
+
+__PrimaryKeyRelatedField__:
 
 ```python
-class CommentSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Comment
-        fields = '__all__'
-        depth = 2
+notes = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
+```
+Json result:
+```json
+'notes': [
+        89,
+        90,
+        91,
+        ...
+    ]
 ```
 
-__Explicit__:
+__StringRelatedField__:
+
 ```python
-class CommentSerializer(serializers.ModelSerializer):
-    article = ArticleSerializer()
+notes = serializers.StringRelatedField(many=True)
+```
+Json result:
+```json
+'notes': [
+        'title 1 - 2021-01-01',
+        'title 2 - 2021-01-01',
+        'title 3 - 2021-01-05',
+        ...
+    ]
+```
+
+__SlugRelatedField__:
+
+```python
+notes = serializers.SlugRelatedField(
+        many=True,
+        read_only=True,
+        slug_field='title'
+     )
+```
+Json result:
+```json
+'notes': [
+        'title 1',
+        'title 2',
+        'title 3',
+        ...
+    ]
+```
+
+__HyperlinkedRelatedField__:
+
+```python
+notes = serializers.HyperlinkedRelatedField(
+        many=True,
+        read_only=True,
+        view_name='note-detail'
+    )
+```
+Json result:
+```json
+'notes': [
+        'http://www.example.com/api/notes/45/',
+        'http://www.example.com/api/notes/46/',
+        'http://www.example.com/api/notes/47/',
+        ...
+    ]
+```
+
+__HyperlinkedIndetityField__:
+
+Only with HyperlinkedModelSerializer:
+
+```python
+class ArticleSerializer(serializers.HyperlinkedModelSerializer):
+    note_listing = serializers.HyperlinkedIdentityField(view_name='note-list')
+```
+Json result:
+```json
+'note_listing': 'http://www.example.com/api/note_list/12/',
+```
+
+
+#### Nested relationships
+
+__Depth attrubute__:
+
+```python
+class ArticleSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Comment
-        fields = '__all__'
+        model = Article
+        fields = ['id', 'title', 'notes']
+        depth = 1
+```
+
+__Nested nested__:
+```python
+class NoteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Note
+        fields = ['id','title', 'created_at']
+
+class ArticleSerializer(serializers.ModelSerializer):
+    notes = NoteSerializer(many=True, read_only=True)
+```
+Json result:
+```json
+'notes': [
+        {'id': 1, 'title': 'Title 1', 'created_at': '2021-01-01'},
+        {'id': 2, 'title': 'Title 2', 'created_at': '2021-01-01'},
+        {'id': 3, 'title': 'Title 3', 'tecreated_atxt': '2021-01-05'},
+        ...
+    ],
+```
+
+__Nested and url__:
+```python
+class NoteSerializer(serializers.HyperlinkedModelSerializer):
+    url = serializers.HyperlinkedIdentityField(
+        view_name='note-detail',
+        lookup_field='pk'
+    )
+    class Meta:
+        model = Note
+        fields = ['title', 'url']
+
+class ArticleSerializer(serializers.ModelSerializer):
+    notes = NoteSerializer(many=True, read_only=True)
+```
+Json result:
+```json
+'notes': [
+        {'title': 'Title 1', 'url': 'http://www.example.com/api/notes/45/'},
+        {'title': 'Title 2', 'url': 'http://www.example.com/api/notes/45/'},
+        {'title': 'Title 3', 'url': 'http://www.example.com/api/notes/45/'},
+        ...
+    ],
 ```
 
 ## VIEWS - Function based 
@@ -685,6 +837,8 @@ __Django model permissions__: If you are using the Django's standard django.cont
 
 But, normally, you will use __custom permissions__. Then:
 * Create your custom authentication classes in `permissions.py`
+* Use `has_permission` for checks that don't need the object data. For checking data only related to the user, the request, the view, the current datetime, etc; but not to check object data.
+* Use `has_object_permission` for checking every data from the object, or that is related to the object.
 * Use always `IsAuthenticated`
 * `permission_classes`: First `IsAuthenticated`, then your custom permission classes in order of importance
 * If the view is unrestricted, use `AllowAny` to make it explicit
@@ -693,3 +847,6 @@ But, normally, you will use __custom permissions__. Then:
 
 ## TESTING
 
+Related to DRF, you only have to test serializers and views.
+
+### Testing Serializers
