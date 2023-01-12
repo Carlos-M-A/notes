@@ -658,10 +658,10 @@ self.api_client.get('/mymodel/23', format='json')
    * Success case: Correct data. Check:
      * `form.is_valid()==True`
      * `len(form.errors)==0`
-     * `form.save()` object fields has been change properly.
+     * `form.save()` object fields has been changed properly.
    * Wrong cases: empty fields, maximum length, incorrect_data. Check: 
      * `form.is_valid()==False`
-     * `error['field']==['error text']`
+     * `form.errors['field']==['error text']`
      * `len(form.errors)==NUM_ERRORS`
 4. Test Views
    * Use `self.client.login(username, password)` or `self.client.force_login()`
@@ -675,12 +675,12 @@ self.api_client.get('/mymodel/23', format='json')
      * `self.assertRedirects()`
      * Data base changes: (`Model.objects.get()` / `filter()` / `count()`)
    * Test cases:
-     1. GET POST Anonymous user -> should redirects to login
-     2. GET logged user -> should show template with data and forms
-     3. GET POST unauthorised user -> should return 403 error
-     4. GET POST non-existed data -> should return 404 error
-     5. POST blank & incorrect data -> should return form with errors
-     6. POST valid data -> should redirects and change data base
+     * 1- GET POST Anonymous user -> should redirects to login
+     * 2- GET logged user -> should show template with data and forms
+     * 3- GET POST unauthorised user -> should return 403 error
+     * 4- GET POST non-existed data -> should return 404 error
+     * 5- POST blank & incorrect data -> should return form with errors
+     * 6- POST valid data -> should redirects and change data base
 5. Test APIs (if there are)
    * Test GET, POST, PUT and DELETE for every URL.
    * Wrong cases and success case, like in views testing

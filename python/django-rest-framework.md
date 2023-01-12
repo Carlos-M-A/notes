@@ -51,7 +51,7 @@ Serializers are similiar to Django Forms in some aspects. To use them:
 s = Serializer(instance)
 s.data
 
-#Deserialize (create):
+#Deserialize and create:
 # dict -> Object
 s = Serializer(data={..})
 s.is_valid()
@@ -65,8 +65,9 @@ else:
   s.errors # dict(field=[problems..])
 
 #Update:
-s = Serializer(instance, validated_data, partial=True)
-new = s.save()
+s = Serializer(instance, data={...})
+s.is_valid()
+instance = s.save()
 ```
 
 To create a serializer, we have to create a class that extends:
@@ -175,7 +176,7 @@ __class Meta attributes__:
 * extra_kwargs (dict)
 
 
-#### HyperlinkedModelSerializer
+### HyperlinkedModelSerializer
 ```python
 class ArticleSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
@@ -194,7 +195,7 @@ class ArticleSerializer(serializers.ModelSerializer):
         fields = ('id', 'title', 'text', 'created_at', 'notes')
 ```
 
-#### Relationships
+### Relationships
 
 Remember to use `related_name=''` in model relationship fields, to avoid errors.
 
@@ -204,7 +205,7 @@ __PrimaryKeyRelatedField__:
 notes = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
 ```
 Json result:
-```json
+```javascript
 'notes': [
         89,
         90,
@@ -219,7 +220,7 @@ __StringRelatedField__:
 notes = serializers.StringRelatedField(many=True)
 ```
 Json result:
-```json
+```javascript
 'notes': [
         'title 1 - 2021-01-01',
         'title 2 - 2021-01-01',
@@ -238,7 +239,7 @@ notes = serializers.SlugRelatedField(
      )
 ```
 Json result:
-```json
+```javascript
 'notes': [
         'title 1',
         'title 2',
@@ -257,7 +258,7 @@ notes = serializers.HyperlinkedRelatedField(
     )
 ```
 Json result:
-```json
+```javascript
 'notes': [
         'http://www.example.com/api/notes/45/',
         'http://www.example.com/api/notes/46/',
@@ -275,12 +276,12 @@ class ArticleSerializer(serializers.HyperlinkedModelSerializer):
     note_listing = serializers.HyperlinkedIdentityField(view_name='note-list')
 ```
 Json result:
-```json
+```javascript
 'note_listing': 'http://www.example.com/api/note_list/12/',
 ```
 
 
-#### Nested relationships
+### Nested relationships
 
 __Depth attrubute__:
 
@@ -303,7 +304,7 @@ class ArticleSerializer(serializers.ModelSerializer):
     notes = NoteSerializer(many=True, read_only=True)
 ```
 Json result:
-```json
+```javascript
 'notes': [
         {'id': 1, 'title': 'Title 1', 'created_at': '2021-01-01'},
         {'id': 2, 'title': 'Title 2', 'created_at': '2021-01-01'},
@@ -327,7 +328,7 @@ class ArticleSerializer(serializers.ModelSerializer):
     notes = NoteSerializer(many=True, read_only=True)
 ```
 Json result:
-```json
+```javascript
 'notes': [
         {'title': 'Title 1', 'url': 'http://www.example.com/api/notes/45/'},
         {'title': 'Title 2', 'url': 'http://www.example.com/api/notes/45/'},
@@ -586,7 +587,7 @@ path('notes/<int:pk>/', note_detail, name='note-detail'),
 ```
 
 
-#### Routers
+__Routers__:
 
 Routers are used for creating the urls for ViewSets
  ```python
@@ -849,4 +850,108 @@ But, normally, you will use __custom permissions__. Then:
 
 Related to DRF, you only have to test serializers and views.
 
-### Testing Serializers
+### How to test: Methods to use and data to check
+
+__Testing Serializers__:
+
+With serializer objects, test `is_valid()`, `errors[]`, and `save()`  methods/fields.
+
+```python
+# Check dict -> obj
+data = {'field1':'data1', 'field2':'data2', ....}
+serializer = MySerializer(data=data)
+self.assertTrue(serializer.is_valid())
+self.assertEqual(serializer.errors['field1'],['error with data1'])
+self.assertEqual(len(serializer.errors), 2)
+# Check save() - create()
+object = serializer.save()
+self.assertEqual(object.field1, 'data1')
+self.assertEqual(object.field2, 'data2')
+# Check save() - update()
+serializer = MySerializer(object, data=data)
+self.assertTrue(serializer.is_valid())
+object = serializer.save()
+self.assertEqual(object.field1, 'data1')
+
+# Check obj -> dict
+obj = MyModel()
+obj.field1 = 'data1'
+obj.field2 = 'data2'
+serializer = MySerializer(obj)
+self.assertEqual(serializer.data['field1', 'data1'])
+```
+
+__Testing Views__:
+
+Use `APITestCase` instead of `TestCase` (or `APISimpleTestCase`, `APITransactionTestCase`, `APILiveServerTestCase`). That is a mirror of `TestCase` but uses a different client class: `APIClient`. Inside a class that extends `APITestCase`, you can use `self.client` directly.
+
+When checking the validity of test responses, inspect the data that the response was created with (`response.data`), rather than inspecting the fully rendered response(`response.content`).
+
+`APIClient`:
+* methods: `get()`, `post()`, `put()`, `patch()`, `delete()`, `head()` and `options()`
+* methods parameters: url, data, format=,
+* e.g.: `client.post('/notes/', {'title': 'new idea'}, format='json')`
+* If views use `SessionAuthentication`, you can use `client.login(username, password)`
+* If views use `TokenAuthentication`, you can use `client.credentials()`.
+  * `token = Token.objects.get_or_create(user__username='username')`
+  * `self.client.credentials(HTTP_AUTHORIZATION='Token ' + token.key)`
+* If you want to bypass authentication entirely, you can use `client.force_authenticate(user=user)`
+* CSRF: By default CSRF validation is not applied when using `APIClient`. So you don't have to worry about it.
+
+```python
+url = reverse('mymodel-list')
+data = {'field1': 'name1'}
+
+response = self.client.post(url, data, format='json')
+
+# Check response status
+self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+# Check response data 
+self.assertEqual(len(response.data), 1)
+self.assertEqual(response.data, {'field1':'name1'})
+# Check data base
+self.assertEqual(MyModel.objects.count(), 1)
+self.assertEqual(MyModel.objects.get().field1, 'name1')
+
+```
+
+Popular status to check (in status): `HTTP_200_OK`, `HTTP_201_CREATED`, `HTTP_202_ACCEPTED`, `HTTP_204_NO_CONTENT`, `HTTP_400_BAD_REQUEST`, `HTTP_403_FORBIDDEN`, `HTTP_404_NOT_FOUND`
+
+
+### Testing Best Practices
+
+__1 - Test everything but serializers and views__:
+* Test models
+* Test urls
+* Test custom permissions, validators, ...
+
+__2 - Test serializers__:
+* Success case (dict -> obj): Correct data. Check: 
+  * `serializer.is_valid()==True`
+  * `len(serializer.errors)==0`
+  * `serializer.save()` object fields has been changed/created properly.
+* Wrong cases (dict -> obj): empty fields, maximum length, incorrect_data. Check: 
+  * `serializer.is_valid()==False`
+  * `serializer.errors['field']==['error text']`
+  * `len(serializer.errors)==NUM_ERRORS`
+* Succes case (obj -> dic): Just check if every field is correct:
+  * `serializer.data` dict data is correctly parsed from the object
+
+  __3 - Test views__:
+* If SessionAuthentication, use `self.client.login(username, password)`
+* If TokenAuthenticationUse `self.client.credentials(HTTP_AUTHORIZATION='Token ' + token.key)`
+* Use `self.client`
+* Check (pick the needed ones depending of the test): 
+  * `resp.status_code == rest_framework.status.HTTP_200_OK | 201 | 404 | 403`
+  * `len(response.data) == NUM_FIELDS(one) or NUM_RESULTS(many)`
+  * `response.data == {dict}`
+  * Data base changes: (`Model.objects.get()` / `filter()` / `count()`)
+
+Test cases:
+1. GET POST PUT DELETE anonymous user -> should return 403 error
+2. GET POST PUT DELETE unauthorised user -> should return 403 error
+3. GET POST PUT DELETE non-existed data -> should return 404 error
+4. GET valid data -> should return 200
+5. POST PUT blank & incorrect data -> should return 400
+6. POST PUT valid data -> should return 200|201|202|204 and change data base
+7. DELETE valid data -> should return 200|202|204 and change data base
