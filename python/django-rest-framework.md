@@ -615,7 +615,7 @@ class MessageViewSet(viewsets.ModelViewSet):
 The same is possible with `perform_update(self, serializer)` and `perform_destroy(self, instance)`
 
 
-## Requests and Responses
+## REQUESTS AND RESPONSES
 
 DRF Request extends HttpRequest
 ```python

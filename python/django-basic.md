@@ -193,18 +193,19 @@ Ways to make the HTTP response:
 
 [Best docs](https://ccbv.co.uk/)
 
+__View__:
 
-#### View:
 Inherit View and implement your methods `get()`, `post()`, etc. that you need.
 
 <img src="./images/methods-order-view.png"  width="400" height="200">
 
+__TemplateView__:
 
-#### TemplateView
 Field: `template_name`
+
 Override: `get_context_data()`
 
-#### Generic display views: DetailView, ListView
+__Generic display views: DetailView, ListView__:
 
 Fields:
 * `template_name = 'path/to/template.html'`
@@ -218,8 +219,7 @@ Methods order:
 <img src="./images/mehods-order-display-views.png"  width="300" height="250">
 
 
-
-#### Generic editing views: FormView, CreateView, UpdateView, DeleteView
+__Generic editing views: FormView, CreateView, UpdateView, DeleteView__:
 
 Fields:
 * `model = MyModel`
@@ -343,7 +343,8 @@ class Migration(migrations.Migration):
 
 ### Django Auth
 
-#### Methods
+__Methods__
+
 * `authenticate(request, username, password) -> User`
 * `login(request, username)`
 * `logout(request)`
@@ -351,7 +352,7 @@ class Migration(migrations.Migration):
 * `redirect_to_login(next)`
 
 
-#### Default AUTH: views - forms - urls - template names
+__Default AUTH: views - forms - urls - template names__
 
 | **url names**		  	| **views**                 	| **forms**          	| **templates**                	|
 |-------------------------	|---------------------------	|--------------------	|------------------------------	|
@@ -377,7 +378,7 @@ Settings to use:
 
 ### Customizing auth
 
-#### Extending User model. 2 options:
+__Extending User model. 2 options__:
 
 1 - Custom user model that extends `django.contrib.auth.models.AbstractUser`.
 * Always create it BEFORE the first migration. Fix it after first migrations is impossible.
@@ -397,7 +398,7 @@ Settings to use:
 * `user.profile` for using it
 
 
-#### Custom auth backend
+__Custom auth backend__
 
 In settings, add AUTHENTICATION_BACKENDS = [......]
 > `[django..contrib.auth.backends.ModelBackend,` <- Default backend
@@ -493,7 +494,8 @@ class MyView(PermissionRequiredMixin, View):
 
 Best doc: [Custom authorization](https://learndjango.com/tutorials/django-best-practices-user-permissions)
 
-#### In class-based views:
+__In class-based views__:
+
 * Inherits `LoginRequiredMixin`, `UserPassesTestMixin` in that order
 * Override `test_func()`. Within it use `self.request.user` to get the user and `self.get_object()` to get the model instance in that view.
 * (optional) Create authorization.py and place the functions that ckeck the permission there. Those functions must return a boolenan. Call them from `test_func()`.
@@ -510,7 +512,7 @@ class BlogUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         return obj.author == self.request.user
 ```
 
-#### In function based views:
+__In function based views__:
 * `@loguin_required`
 * Create authorization.py and place the functions for checking permissions there. Those functions must raise a `PermissionDenied` or a `HttpResponseForbidden` if the user isn't allowed for that request.
 * Call functions in authorization.py after getting the objects. 
@@ -563,11 +565,11 @@ In `setUp()`: Every change in the data base will be automatically removed after 
 
 ### How to test: Methods to use and data to check
 
-#### Testing Models:
+__Testing Models__:
 
 Test model class methods, same as a normal python class
 
-#### Testing Forms:
+__Testing Forms__:
 
 In a form object, test `is_valid()`, `errors[]` and `save()` methods/fields.
 ```python
@@ -580,7 +582,7 @@ object = form.save()
 self.assertEqual(object.field1, 'data1')
 ```
 
-#### Testing URLs
+__Testing URLs__
 
 Just test if the url from the method `reverse()` is ok.
 ```python
@@ -588,7 +590,7 @@ url = reverse('my_app:my_view')
 self.assertEqual(url, '/my_app/my_view/')
 ```
 
-#### Testing Views:
+__Testing Views__:
 
 Use `self.client` for HTTP requests and to retrieve the response. Check the HTTP response.
 ```python
@@ -644,7 +646,8 @@ The response of a client.get() or client,post() is a object with the fields:
 * request: request object used in views
 * status_code: int(200, 404. 403, 500, etc)
 
-#### Testing API:
+__Testing API__:
+
 Use `self.api_client`:
 ```python
 self.api_client.get('/mymodel/23', format='json')
