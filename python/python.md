@@ -56,7 +56,7 @@ python-basic/
 └── setup.py
 ```
 
-## METHODS AND ATTRIBUTES USE (instance, class and static ones)
+## CLASSES - METHODS AND ATTRIBUTES
 
 ```python
 class MyClass:
@@ -445,7 +445,7 @@ False
 True
 ```
 
-## CONTROL FLOW: if, elif, else, for, while, try, except, finally
+## CONTROL FLOW
 
 ```python
 if <expr1>:

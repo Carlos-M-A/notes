@@ -690,6 +690,16 @@ def function_based_view(request, format=None):
 * Good option if you only use the API from a browser
 * The server has to store session data for every user and this increase the overhead.
 
+To request an session_id using their username and password:
+```python
+# Add this to urls.py
+urlpatterns = [
+    ...
+    path('auth/', include('rest_framework.urls'))
+]
+```
+
+
 ### TokenAuthentication
 
 * We need to send username and password at initial request. Then from server response we get the token and gonna use that for requests
@@ -701,9 +711,12 @@ To use TokenAuthentication, you need to add `rest_framework.authtoken` to `INSTA
 
 To request an authentication token using their username and password, use `ObtainAuthToken` or `obtain_auth_token()`
 ```python
-# Add this to setting.py
+# Add this to urls.py
 import rest_framework.authtoken.views
-path('api-token-auth/', views.obtain_auth_token, name='api-token-auth'),
+urlpatterns = [
+    ...
+    path('api-token-auth/', views.obtain_auth_token, name='api-token-auth'),
+]
 ```
 By default, there are no permissions or throttling applied to the obtain_auth_token view. If you do wish to apply to throttle you'll need to override the view class, and include them using the throttle_classes attribute.
 
