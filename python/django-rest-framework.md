@@ -127,8 +127,8 @@ class SimpleSerializer(serializers.Serializer):
 
   # def validate_<field>(self, value):
   def validate_name(self, value):
-    if not name:
-      raise serializers.ValidationError('Name required')
+    if len(value) < 4:
+      raise serializers.ValidationError('Name must have at least 4 characters')
     ...
     return name
 
