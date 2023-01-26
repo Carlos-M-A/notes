@@ -586,8 +586,8 @@ mutable, not-duplicated elements, not-indexed elements
 mutable, not-duplicated keys, indexed elements (insertion order)
 
 
-|             **dict**             |          **clarification**          |
-|:--------------------------------:|:-----------------------------------:|
+| **dict**                         | **clarification**                   |
+|----------------------------------|-------------------------------------|
 | clear()                          |                                     |
 | copy()->dict                     |                                     |
 | fromkeys(keys:set,[value])->dict | *create new dict                    |
@@ -650,14 +650,98 @@ print(f"Hello {name}! Welcome to {place}.")
 
 ## COMPREHENSION (LIST and others)
 
-* List Comprehensions
-* Dictionary Comprehensions
-* Set Comprehensions
-* Generator Comprehensions
+* List comprehension
+* Dictionary comprehension
+* Set comprehension
+* Generator comprehension
 
-`new_list = [expression for member in iterable (if conditional)]`
+
+`new_list = [expression for item in iterable (if conditional)]`
+
 
 ```python
+# List comprehension
+
+sentence = "I work as a waiter in city center"
 vowels = [i for i in sentence if i in 'aeiou']
+>>> ['o', 'a', 'a', 'a', 'i', 'e', 'i', 'i', 'e', 'e']
+
+fruits = ["banana", "orange", "apple", "banana"]
+newlist = [x if x != "banana" else "orange" for x in fruits]
+>>> ['orange', 'orange', 'apple', 'orange']
+
+num_list = [y for y in range(100) if y % 2 == 0 if y % 5 == 0]
+>>> [0, 10, 20, 30, 40, 50, 60, 70, 80, 90]
+
+# Dictionary comprehension
+d = {num: num**2 for num in range(1, 7)}
+>>> {1: 1, 2: 4, 3: 9, 4: 16, 5: 25, 6: 36}
+
+# Set comprehension
+vlans = [10, '30', 30, 10, '56']
+unique_vlans = {int(vlan) for vlan in vlans}
+>>> {56, 10, 30}
+
+# Generator comprehension
+generator = (i*2 for i in range(4) if i%2 == 0)
+print(list(generator))
+>>> [0, 4, 8, 12, 16]
 ```
 
+## LAMBDA FUNCTIONS
+
+Lambda function = Anonymous function
+
+Syntax: `lambda p1, p2: expression`
+
+Examples:
+```python
+a = lambda x: x + 1
+>>> a(5) -> 6
+
+a = lambda x, y, z: x + y + z
+>>> a(1, 2, 3) -> 6
+
+a = lambda a, b : a if(a > b) else b
+>>> a(3, 8) -> 8
+
+a = lambda x: x * 10 if x > 10 else (x * 5 if x < 5 else x)
+>>> a(3) -> 15
+>>> a(8) -> 8
+>>> a(12) -> 120
+```
+
+Normal uses:
+* In built-in functions that have a function as a parameter: `map()`, `filter()`, `sorted()`, `reduce()`, `max()` and `min()`
+* With `sort()` method, within lists,
+* (not usual) In any other function that has a function as a parameter, when we don't need to define a normal function to be called in other parts of the code and if that function is not complex or can be written in one line.
+* With UI frameworks as Tkinter
+
+In any other case, you should use normal functions.
+
+
+## BUILT-IN FUNCTIONS FOR ITERABLES
+
+map, filter, sorted, *reduce, max, min, sum, any, all
+
+*`reduce()` is not buit-in, we need to import `functools`
+
+`map(function, iterable, [*iterables]) -> iterator`:
+
+ The map function takes in an iterable and a function as parameters. It calls the function on each element in the iterable.
+
+`filter(function, iterable) -> iterator`: 
+
+`functools.reduce(function, iterable, [initializer])`
+
+`sorted(iterable, [key:function], [reverse]) -> list`:
+
+`max(iterable, [key:function], [default]) -> elem`
+
+`min(iterable, [key:function], [default]) -> elem`
+
+`sum(iterable, [start]) -> int`
+
+`all(iterable) -> bool`
+
+`any(iterable) -> bool`
