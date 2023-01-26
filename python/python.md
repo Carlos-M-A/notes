@@ -530,10 +530,14 @@ finally:
 
 ## BUILT-IN DATA STRUCTURES
 
-__list, str, tuple__
+### list, str, tuple
+
+Duplicated elements, indexed elements
+
 * list: mutable array
 * tuple: immutable array
 * str: immutable array of characters
+
 
 | **list**                      | **str**           | **tuple** |
 |-------------------------------|-------------------|-----------|
@@ -541,16 +545,17 @@ __list, str, tuple__
 | clear()                       |                   |           |
 | copy()->list                  |                   |           |
 | count(elem)->int              | count()           | count()   |
-| extend(elem:iterable)         |                   |           |
+| extend(iterable)              |                   |           |
 | index(e, [start], [end])->int | index() or find() | index()   |
-| insert(i, elem)               |                   |           |
-| pop([i])                      |                   |           |
+| insert(index, elem)           |                   |           |
+| pop([index])                  |                   |           |
 | remove(elem)                  |                   |           |
 | reverse()                     |                   |           |
 | sort([reverse], [key])        |                   |           |
 
 
-__set__
+
+### set
 
 mutable, not-duplicated elements, not-indexed elements
 
@@ -561,7 +566,7 @@ mutable, not-duplicated elements, not-indexed elements
 | copy()-> set                         |                           |
 | pop()-> elem                         | *remove random element    |
 | remove(elem) or discard(elem)        | *remove() raises an error |
-| update(set or iterable)              |                           |
+| update(iterable)                     |                           |
 |                                      |                           |
 | difference(set)-> set                | A - B                     |
 | difference_update(set)               | A = A - B                 |
@@ -575,28 +580,29 @@ mutable, not-duplicated elements, not-indexed elements
 | union(set, [set], ...)-> set         | A ∪ B    ∪ C...           |
 
 
-__dict__
+
+### dict
 
 mutable, not-duplicated keys, indexed elements (insertion order)
 
 
-| **dict**                                | **clarification**                                        |
-|-----------------------------------------|----------------------------------------------------------|
-| clear()                                 |                                                          |
-| copy()->dict                            |                                                          |
-| fromkeys(keys:set, [value])-> dict      | *returns a new dict, doesn't modify the current dict     |
-| get(key, [defaultvalue])-> value        | *if key doesn't exits, returns defaultvale               |
-| items()-> list(tuple(key, value))       |                                                          |
-| keys()-> list                           |                                                          |
-| pop(key, [defaultvalue])-> value        | *if key doesn't exits, returns defaultvale               |
-| popitem()-> tuple(key, value)           | *removes the last (>=python3.7)                          |
-| setdefault(key, [defaultvalue])-> value | *if key doesn't exists, inserts and returns defaultvalue |
-| update(dict or iterable)                | *iterable with key-value pairs                           |
-| values()-> list                         |                                                          |
+|             **dict**             |          **clarification**          |
+|:--------------------------------:|:-----------------------------------:|
+| clear()                          |                                     |
+| copy()->dict                     |                                     |
+| fromkeys(keys:set,[value])->dict | *create new dict                    |
+| get(key, [default])-> value      | *if key not exits, returns default  |
+| items()-> list(tuple(key,value)) |                                     |
+| keys()-> list                    |                                     |
+| pop(key, [default])-> value      | *if key not exits, returns default  |
+| popitem()-> tuple(key, value)    | *removes the last (>=python3.7)     |
+| setdefault(key,[default])->value | *if key not exists, inserts default |
+| update(dict or iterable)         | *iterable with key-value pairs      |
+| values()-> list                  |                                     |
 
-__str__
 
-Useful methods:
+### str
+
 | **str**                        | **clarification**            |
 |--------------------------------|------------------------------|
 | capitalize()-> str             | "apple" -> "Apple"           |
@@ -613,9 +619,10 @@ Useful methods:
 | isalnum(),isalpha(),isascii(), | "adf876".isalnum() -> True   |
 
 
-__format() and f-strings__
 
-format() method:
+### format() and f-strings
+
+`format()` method:
 ```python
 greeting = "Hello {name}! Welcome to {place}."
 print(greeting.format(name="Trey", place="Mongolia"))
@@ -627,7 +634,7 @@ greeting = "Hello {}! Welcome to {}."
 print(greeting.format("Trey", "Mongolia"))
 ```
 
-f-strings is an evolution of str.format() (From python3.6):
+`f-strings` is an evolution of `str.format()` (From python3.6):
 ```python
 # format() method
 greeting = "Hello {name}! Welcome to {place}."
