@@ -323,6 +323,7 @@ def test_1():
 
 
 ### in, not in
+
 1- Checking if an element is in a sequence
 ```python
 >>> 'g' in 'ghost'
@@ -352,6 +353,7 @@ True
 
 
 ### is, is not
+
  * `is` evaluates to True if the variables on either side of the operator point to the same object and false otherwise. Used to check `True`, `False` or `None`
  * `is not` evaluates `True` if both variables are not the same object.
 
@@ -523,5 +525,132 @@ else:
     print('There was no raised exception')
 finally:
     print('This is always executed')
+```
+
+
+## BUILT-IN DATA STRUCTURES
+
+__list, str, tuple__
+* list: mutable array
+* tuple: immutable array
+* str: immutable array of characters
+
+| **list**                      | **str**           | **tuple** |
+|-------------------------------|-------------------|-----------|
+| append(elem)                  |                   |           |
+| clear()                       |                   |           |
+| copy()->list                  |                   |           |
+| count(elem)->int              | count()           | count()   |
+| extend(elem:iterable)         |                   |           |
+| index(e, [start], [end])->int | index() or find() | index()   |
+| insert(i, elem)               |                   |           |
+| pop([i])                      |                   |           |
+| remove(elem)                  |                   |           |
+| reverse()                     |                   |           |
+| sort([reverse], [key])        |                   |           |
+
+
+__set__
+
+mutable, not-duplicated elements, not-indexed elements
+
+| **set**                              | **clarification**         |
+|--------------------------------------|---------------------------|
+| add(elem)                            |                           |
+| clear()                              |                           |
+| copy()-> set                         |                           |
+| pop()-> elem                         | *remove random element    |
+| remove(elem) or discard(elem)        | *remove() raises an error |
+| update(set or iterable)              |                           |
+|                                      |                           |
+| difference(set)-> set                | A - B                     |
+| difference_update(set)               | A = A - B                 |
+| intersection(set, [set], ...)-> set  | A ∩ B    ∩ C...           |
+| intersection_update(set, [set], ...) | A = A ∩ B    ∩ C...       |
+| isdisjoint(set)                      | A ∩ B == ∅ ?              |
+| issubset(set)                        | A ⊆ B ?                   |
+| issuperset(set)                      | A ⊇ B ?                   |
+| symetric_difference()                | (A ∪ B) - (A ∩ B)         |
+| symetric_difference_update()         | A = (A ∪ B) - (A ∩ B)     |
+| union(set, [set], ...)-> set         | A ∪ B    ∪ C...           |
+
+
+__dict__
+
+mutable, not-duplicated keys, indexed elements (insertion order)
+
+
+| **dict**                                | **clarification**                                        |
+|-----------------------------------------|----------------------------------------------------------|
+| clear()                                 |                                                          |
+| copy()->dict                            |                                                          |
+| fromkeys(keys:set, [value])-> dict      | *returns a new dict, doesn't modify the current dict     |
+| get(key, [defaultvalue])-> value        | *if key doesn't exits, returns defaultvale               |
+| items()-> list(tuple(key, value))       |                                                          |
+| keys()-> list                           |                                                          |
+| pop(key, [defaultvalue])-> value        | *if key doesn't exits, returns defaultvale               |
+| popitem()-> tuple(key, value)           | *removes the last (>=python3.7)                          |
+| setdefault(key, [defaultvalue])-> value | *if key doesn't exists, inserts and returns defaultvalue |
+| update(dict or iterable)                | *iterable with key-value pairs                           |
+| values()-> list                         |                                                          |
+
+__str__
+
+Useful methods:
+| **str**                        | **clarification**            |
+|--------------------------------|------------------------------|
+| capitalize()-> str             | "apple" -> "Apple"           |
+| casefold()-> str               | "AÑЖß"->"añжss" (+agressive) |
+| lower()-> str                  | "AVÑЖß" -> "avñжß"           |
+| format(val1, val2, ...)-> str  | "a {val1} b" -> "a value b"  |
+| join(iterable)-> str           | "-".["a","b","c"] -> "a-b-c" |
+| replace(old,new,[count])-> str | "TaaZ".("aa","BB") -> "TBBZ" |
+| split([sep],[max])-> list      | "aa bb d" -> ["aa","bb","d"] |
+| strip([str])-> str             | "  aa bb   " -> "aa bb"      |
+| translate(dict)-> str          | replaces chars(+maketrans()) |
+| maketrans(st1,st2,[st3])->dict | *to use with translate()     |
+| upper()-> str                  | "avñжh"-> "AVÑЖH"            |
+| isalnum(),isalpha(),isascii(), | "adf876".isalnum() -> True   |
+
+
+__format() and f-strings__
+
+format() method:
+```python
+greeting = "Hello {name}! Welcome to {place}."
+print(greeting.format(name="Trey", place="Mongolia"))
+
+greeting = "Hello {0}! Welcome to {1}."
+print(greeting.format("Trey", "Mongolia"))
+
+greeting = "Hello {}! Welcome to {}."
+print(greeting.format("Trey", "Mongolia"))
+```
+
+f-strings is an evolution of str.format() (From python3.6):
+```python
+# format() method
+greeting = "Hello {name}! Welcome to {place}."
+print(greeting.format(name="Trey", place="Mongolia"))
+
+# f-string
+name = "Trey"
+place = "Mongolia"
+print(f"Hello {name}! Welcome to {place}.")
+```
+
+
+
+## COMPREHENSION (LIST and others)
+
+* List Comprehensions
+* Dictionary Comprehensions
+* Set Comprehensions
+* Generator Comprehensions
+
+`new_list = [expression for member in iterable (if conditional)]`
+
+```python
+vowels = [i for i in sentence if i in 'aeiou']
 ```
 
