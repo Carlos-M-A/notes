@@ -724,24 +724,53 @@ In any other case, you should use normal functions.
 
 map, filter, sorted, *reduce, max, min, sum, any, all
 
-*`reduce()` is not buit-in, we need to import `functools`
 
 `map(function, iterable, [*iterables]) -> iterator`:
 
- The map function takes in an iterable and a function as parameters. It calls the function on each element in the iterable.
+map() applies the function on each element of the iterable.
+
 
 `filter(function, iterable) -> iterator`: 
 
-`functools.reduce(function, iterable, [initializer])`
+`filter()` calls the function on each element of the iterable, then returns only the elements whose function's result was `True`. (function must return a boolean)
+
 
 `sorted(iterable, [key:function], [reverse]) -> list`:
 
+`sorted()` sorts iterable's elements. If `key` function is given, it applies that function to every element before starting to order. `key` is used to specify any detailed sorting criteria, and must have just one parameter.
+
+
+`functools.reduce(function, iterable, [initializer]) ->  value`
+* `reduce()` is not buit-in, we need to import `functools`
+* `function` must accept two parameters
+* performs the following steps:
+  1. Apply a function (or callable) to the first two items in an iterable and generate a partial result.
+  2. Use that partial result, together with the third item in the iterable, to generate another partial result.
+  3. Repeat the process until the iterable is exhausted and then return a single cumulative value.
+
+So `reduce(lambda x,y: x*y, list1)` == `(((list1[0]*list1[1])*list1[2])*list1[3])`
+
+
 `max(iterable, [key:function], [default]) -> elem`
+
+`max()` returns max value. If key if given, applies it to every element
+
 
 `min(iterable, [key:function], [default]) -> elem`
 
+`min()` returns min value. If key if given, applies it to every element
+
+
 `sum(iterable, [start]) -> int`
+
+`min()` returns sum of all values. If start if given, it will be the initial sum
+
 
 `all(iterable) -> bool`
 
+`True` if all elements are `True`. If iterable is empty, returns `True`
+
+
 `any(iterable) -> bool`
+
+`True` if any of the elements is `True`, `False` otherwise. If iterable is empty, returns `False`
