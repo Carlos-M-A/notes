@@ -23,6 +23,8 @@ Paragraph 2 - random letters: adsfa adsf adsf asdf a dfa sdf adf ad fa df sa
 
 **bold**
 
+*italics*
+
 One line code:
 ` print ('aa') `
 

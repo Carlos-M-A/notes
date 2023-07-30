@@ -774,3 +774,6 @@ So `reduce(lambda x,y: x*y, list1)` == `(((list1[0]*list1[1])*list1[2])*list1[3]
 `any(iterable) -> bool`
 
 `True` if any of the elements is `True`, `False` otherwise. If iterable is empty, returns `False`
+
+
+## DATETIME

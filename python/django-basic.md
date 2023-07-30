@@ -309,11 +309,11 @@ Supponsing that there is already a `0001_initial.py` file in the folder 'migrati
 from django.db import migrations
 
 def initial_data_seed(apps, schema_editor):
-    Assembly = apps.get_model('app_name', 'MyModel')
+    MyModel = apps.get_model('app_name', 'MyModel')
     my_model = MyModel()
     my_model.name_text = 'Name'
     my_model.description_text = 'Some description'
-    assembly.save()
+    my_model.save()
 
 class Migration(migrations.Migration):
 
@@ -325,6 +325,40 @@ class Migration(migrations.Migration):
         migrations.RunPython(initial_data_seed),
     ]
 ```
+
+When you execute `python manage.py migrate`, these data will be written in DB.
+
+
+## DB DATA SEED - FIXTURES (for installation and test)
+
+Create a file in 'fixtures' directory inside your app. 
+
+When you execute `python manage.py loaddata file_name`, these data will be written in DB.
+
+Fixtures can be written as JSON, XML or YAML (with PyYAML).
+
+Example JSON fixture:
+```json
+[
+  {
+    "model": "myapp.person",
+    "pk": 1,
+    "fields": {
+      "first_name": "John",
+      "last_name": "Lennon"
+    }
+  },
+  {
+    "model": "myapp.person",
+    "pk": 2,
+    "fields": {
+      "first_name": "Paul",
+      "last_name": "McCartney"
+    }
+  }
+]
+```
+
 
 
 ## AUTHENTICATION
@@ -449,7 +483,7 @@ Decorators for function based views. Mixins models for class based views.
 | `@login_required`        	| LoginRequiredMixin      	| (False) -> settings.LOGIN_URL 	|
 | `@staff_member_required` 	|                         	| For only staff and admins     	|
 | `@user_passes_test`      	| UserPassesTestMixin     	| Custom test authorization     	|
-| @permission_required     	| PermissionRequiredMixin 	| Built-in django permissions   	|
+| `@permission_required`   	| PermissionRequiredMixin 	| Built-in django permissions   	|
 
 To use a mixin, simply make your view inherits the mixin class (the firist in the parents list): `class MyView(LoginRequiredMixin, View)`. `raise_exception` must be `True` to raise a 403 HTTP Forbidden error.
 
@@ -497,7 +531,7 @@ Best doc: [Custom authorization](https://learndjango.com/tutorials/django-best-p
 __In class-based views__:
 
 * Inherits `LoginRequiredMixin`, `UserPassesTestMixin` in that order
-* Override `test_func()`. Within it use `self.request.user` to get the user and `self.get_object()` to get the model instance in that view.
+* Override `test_func()`. Within it, use `self.request.user` to get the user and `self.get_object()` to get the model instance in that view.
 * (optional) Create authorization.py and place the functions that ckeck the permission there. Those functions must return a boolenan. Call them from `test_func()`.
 * Field `raise_exception = False`.
 
@@ -507,6 +541,7 @@ class BlogUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     template_name = 'post_edit.html'
     fields = ['title', 'body']
     raise_exception = True
+
     def test_func(self):
         obj = self.get_object()
         return obj.author == self.request.user
@@ -664,8 +699,8 @@ self.api_client.get('/mymodel/23', format='json')
      * `form.save()` object fields has been changed properly.
    * Wrong cases: empty fields, maximum length, incorrect_data. Check: 
      * `form.is_valid()==False`
-     * `form.errors['field']==['error text']`
      * `len(form.errors)==NUM_ERRORS`
+     * `form.errors['field']==['error text']`
 4. Test Views
    * Use `self.client.login(username, password)` or `self.client.force_login()`
    * Use `self.client.get()` and `self.client.post()`
@@ -712,7 +747,7 @@ In models.py:
 
 In templates/HTML:
 * For forms to upload file: modify `<form>` to: `<form enctype="multipart/form-data">`
-* To show an image: `<img src="{{profile.images.url}}">`
+* To show an image: `<img src="{{profile.image.url}}">`
 
 In forms.py:
 * If ModelForm: Just add the field to Meta class
