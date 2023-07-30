@@ -18,10 +18,10 @@ Cloud computing is the on-demand availability of computing resources (such as st
 * FaaS - Function as a Service (Serverless)
 * SaaS - Software as a Service (Normal apps for users: Gmail, Office 365, Youtube)
 
-<img src="./images/cloud-types-1.png"  width="400" height="200">
-<img src="./images/cloud-types-2.png"  width="400" height="300">
-<img src="./images/cloud-types-3.jpg"  width="400" height="400">
-<img src="./images/cloud-types-4.png"  width="400" height="500">
+<img src="./images/cloud-types-1.png"  width="1000" height="500">
+<img src="./images/cloud-types-2.png"  width="1000" height="600">
+<img src="./images/cloud-types-3.jpg"  width="800" height="400">
+<img src="./images/cloud-types-4.png"  width="400" height="300">
 
 ## Categories of cloud services
 
