@@ -7,17 +7,22 @@ Cloud computing is the on-demand availability of computing resources (such as st
 ## TERMS
 
 * CSP: Cloud Solution Provider or Cloud Service Provider. E.g. AWS, Google Cloud Platform, Microsoft Azure
+* SLA: Service Level Agreement: The agreement between the cloud service provider and the customers
+* Elasticity: the ability of a system to adapt the changing workload demand to the resources
+* Cloud native: an application that was designed to reside in the cloud from the start
+* Private cloud: cloud accessible only to selected users of a single organization
+* Public cloud: cloud accessible for all users over the internet, using pay-per-use access to services
 * GCP: Google Cloud Platform. The cloud of Google
 * AWS: Amazon Web Services. The cloud of Amazon
 * Microsoft Azure: The cloud of Microsoft
 
 ## TYPES OF CLOUD SERVICES
 
-* IaaS - Infrastruture as a Service
-* CaaS - Container as a Service ()
+* IaaS - Infrastruture as a Service (You manage the virtual machine)
+* CaaS - Container as a Service (You manage the container (Docker, Kubernetes, ...))
 * PaaS - Platform as a Service (You just build the app)
 * FaaS - Function as a Service (Serverless)
-* SaaS - Software as a Service (Normal apps for users: Gmail, Office 365, Youtube)
+* SaaS - Software as a Service (Normal apps for users: Gmail, Office 365, SAP, Youtube)
 
 ### Table 1
 
@@ -25,7 +30,7 @@ Cloud computing is the on-demand availability of computing resources (such as st
 
 ### Table 2
 
-<img src="./images/cloud-types-2.png"  width="1000" height="600">
+<img src="./images/cloud-types-2.png"  width="700" height="900">
 
 ### Table 3
 
@@ -33,22 +38,27 @@ Cloud computing is the on-demand availability of computing resources (such as st
 
 ### Graphical comparison
 
-<img src="./images/cloud-types-4.png"  width="400" height="250">
+<img src="./images/cloud-types-4.png"  width="500" height="300">
 
 
 ## CATEGORIES OF CLOUD SERVICES
 
-* Computing
-* Storage
-* Databases
-* Security
-* Containers
+* Computing: Virtual machines, App computing, Serverless functions, etc
+* Storage: Disk space for storing files (Objects (usually), archives (rarely), files (hierarchical))
+* Database: Relational DB, NoSQL DB, Caching
+* Security: Authorization, Permissions, Tracking users, Data protection
+* Containers: Docker containers, Kubernetes
+* Analytics: Bussiness analytics, Big Data, Data Warehouse, etc
+* Machine learning & AI
+* Networking: API, DNS, Load balancing, etc
 
 ## COMPARISON OF POPULAR CLOUD SERVICES 
 
+AWS - AZURE - GOOGLE CLOUD
+
 ### Table 1 - Most popular services
 
-<img src="./images/cloud-comparison-1.jpg"  width="1000" height="500">
+<img src="./images/cloud-comparison-1.jpg"  width="1000" height="620">
 
 ### Table 2 - Popular services
 
@@ -56,4 +66,4 @@ Cloud computing is the on-demand availability of computing resources (such as st
 
 ### Table 3 - All services
 
-<img src="./images/cloud-comparison-3.png"  width="1150" height="5800">
+<img src="./images/cloud-comparison-3.png"  width="1050" height="5800">
