@@ -7,8 +7,9 @@ Cloud computing is the on-demand availability of computing resources (such as st
 ## Terms
 
 * CSP: Cloud Solution Provider or Cloud Service Provider. E.g. AWS, Google Cloud Platform, Microsoft Azure
-* GCP: Google Cloud Platform. The CSP of Google
-* AWS: Amazon Web Services. The CSP of Amazon
+* GCP: Google Cloud Platform. The cloud of Google
+* AWS: Amazon Web Services. The cloud of Amazon
+* Microsoft Azure: The cloud of Microsoft
 
 ## Types of cloud services
 
@@ -18,10 +19,15 @@ Cloud computing is the on-demand availability of computing resources (such as st
 * FaaS - Function as a Service (Serverless)
 * SaaS - Software as a Service (Normal apps for users: Gmail, Office 365, Youtube)
 
-<img src="./images/cloud-types-1.png"  width="1000" height="500">
+
+<img src="./images/cloud-types-1.png"  width="1000" height="550">
+
 <img src="./images/cloud-types-2.png"  width="1000" height="600">
-<img src="./images/cloud-types-3.jpg"  width="800" height="400">
-<img src="./images/cloud-types-4.png"  width="400" height="300">
+
+<img src="./images/cloud-types-3.jpg"  width="900" height="450">
+
+<img src="./images/cloud-types-4.png"  width="400" height="250">
+
 
 ## Categories of cloud services
 
@@ -29,3 +35,12 @@ Cloud computing is the on-demand availability of computing resources (such as st
 * Storage
 * Databases
 * Security
+* Containers
+
+## Comparison of cloud services (AWS - Azure - Google Cloud)
+
+<img src="./images/cloud-comparison-1.png"  width="1000" height="500">
+
+<img src="./images/cloud-comparison-2.png"  width="1000" height="2000">
+
+<img src="./images/cloud-comparison-3.jpg"  width="1000" height="5000">
