@@ -39,8 +39,8 @@ Cloud computing is the on-demand availability of computing resources (such as st
 
 ## Comparison of cloud services (AWS - Azure - Google Cloud)
 
-<img src="./images/cloud-comparison-1.png"  width="1000" height="500">
+<img src="./images/cloud-comparison-1.jpg"  width="1000" height="500">
 
-<img src="./images/cloud-comparison-2.png"  width="1000" height="2000">
+<img src="./images/cloud-comparison-2.jpeg"  width="1000" height="2000">
 
-<img src="./images/cloud-comparison-3.jpg"  width="1000" height="5000">
+<img src="./images/cloud-comparison-3.png"  width="1000" height="5000">
