@@ -1,17 +1,17 @@
 # CLOUD COMPUTING
 
-## What is Cloud Computing
+## WHAT IS CLOUD COMPUTING?
 
 Cloud computing is the on-demand availability of computing resources (such as storage, processing, database or infrastructure), as services over the internet. It eliminates the need for individuals to self-manage physical resources themselves (On-Premises infrastructure), and only pay for what they use.
 
-## Terms
+## TERMS
 
 * CSP: Cloud Solution Provider or Cloud Service Provider. E.g. AWS, Google Cloud Platform, Microsoft Azure
 * GCP: Google Cloud Platform. The cloud of Google
 * AWS: Amazon Web Services. The cloud of Amazon
 * Microsoft Azure: The cloud of Microsoft
 
-## Types of cloud services
+## TYPES OF CLOUD SERVICES
 
 * IaaS - Infrastruture as a Service
 * CaaS - Container as a Service ()
@@ -19,17 +19,24 @@ Cloud computing is the on-demand availability of computing resources (such as st
 * FaaS - Function as a Service (Serverless)
 * SaaS - Software as a Service (Normal apps for users: Gmail, Office 365, Youtube)
 
+### Table 1
 
 <img src="./images/cloud-types-1.png"  width="1000" height="550">
 
+### Table 2
+
 <img src="./images/cloud-types-2.png"  width="1000" height="600">
 
+### Table 3
+
 <img src="./images/cloud-types-3.jpg"  width="900" height="450">
+
+### Graphical comparison
 
 <img src="./images/cloud-types-4.png"  width="400" height="250">
 
 
-## Categories of cloud services
+## CATEGORIES OF CLOUD SERVICES
 
 * Computing
 * Storage
@@ -37,10 +44,16 @@ Cloud computing is the on-demand availability of computing resources (such as st
 * Security
 * Containers
 
-## Comparison of cloud services (AWS - Azure - Google Cloud)
+## COMPARISON OF POPULAR CLOUD SERVICES 
+
+### Table 1 - Most popular services
 
 <img src="./images/cloud-comparison-1.jpg"  width="1000" height="500">
 
-<img src="./images/cloud-comparison-2.jpeg"  width="1000" height="2000">
+### Table 2 - Popular services
 
-<img src="./images/cloud-comparison-3.png"  width="1000" height="5000">
+<img src="./images/cloud-comparison-2.jpeg"  width="850" height="2000">
+
+### Table 3 - All services
+
+<img src="./images/cloud-comparison-3.png"  width="1150" height="5800">
