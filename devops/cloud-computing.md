@@ -67,3 +67,7 @@ AWS - AZURE - GOOGLE CLOUD
 ### Table 3 - All services
 
 <img src="./images/cloud-comparison-3.png"  width="1050" height="5800">
+
+## USEFUL LINKS
+
+[AWS Best Practices](https://roadmap.sh/best-practices/aws)
