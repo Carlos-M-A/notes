@@ -21,6 +21,16 @@ Don't learn:
 
 ## DEFINITIONS
 
+
+
+## VIRTUALIZATION LEVELS: VIRTUAL ENVIRONMENT -> CONTAINER -> VIRTUAL MACHINE
+
+<!-- <img src="./images/docker-diagram-1.png"  width="1050" height="5800"> -->
+<img src="./images/docker-diagram-vir-1.png">
+<img src="./images/docker-diagram-vir-2.png">
+
+## DEFINITIONS
+
 * Docker image: A read-only template containing all the necesary files, libraries, and dependencies required to run an application in a Docker container
 * Docker container: A running instance of the image. That is, an executable packaging including the code, the libraries, and dependencies needed to run the application
 * Dockerfile: A script containing instructions to build a image
@@ -32,7 +42,28 @@ Don't learn:
 * Docker volumes: A volume is a virtual specially-designated directory within one or more containers that bypasses the Union File System. Volumes are designed to persist data, independent of the container's life cycle. Docker therefore never automatically deletes volumes when you remove a container,
 * Docker networks: Virtual bridge network inside Docker server to connect different containers each other within the local Docker server.
 
-## Basic overview
+<img src="./images/docker-diagram-1.png">
 
-<img src="./images/docker-diagram-2.png"  width="1050" height="5800">
+## CONTAINERS, IMAGES AND DOCKERFILES
 
+<img src="./images/docker-diagram-2.png">
+<img src="./images/docker-diagram-3.png">
+
+## VOLUMES
+
+<img src="./images/docker-diagram-4.png">
+<img src="./images/docker-diagram-5.png">
+
+## NETWORKS
+
+<img src="./images/docker-diagram-6.png">
+
+## DOCKER COMPOSE
+
+<img src="./images/docker-diagram-7.png">
+<img src="./images/docker-diagram-8.png">
+
+## COMMANDS CHEATSHEAT
+
+<img src="./images/docker-diagram-9.png">
+<img src="./images/docker-diagram-10.png"> 
