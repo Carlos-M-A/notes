@@ -48,7 +48,7 @@ The "core" of a hexagonal project is application and domain
 
 ### Image 3 - Hexagonal architecture layers (following DDD layers naming)
 
-<img src="./images/hex-arch-3.png">
+<img src="./images/hex-arch-3.png" width="400" height="400">
 
 ### Image 4 - Hexagonal architecture with DDD - Complete diagram
 
