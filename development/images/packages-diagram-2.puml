@@ -1,0 +1,31 @@
+@startuml
+
+package application {
+  package ports {
+    package repositories
+  }
+  package dtos
+  package services
+  package application.events
+}
+
+package domain {
+  package ientities
+  package entities
+  package valueobjects
+  package events
+  package domain.services
+}
+
+entities ..> ientities
+entities ..> events
+repositories ..> ientities
+ports ..> application.events
+services ..> entities
+services ..> ports
+ports ..> dtos
+entities ..> valueobjects
+domain.services ..> entities
+services ..> events
+services ..> domain.services
+@enduml

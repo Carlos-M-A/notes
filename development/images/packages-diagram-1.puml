@@ -1,0 +1,30 @@
+@startuml
+
+left to right direction
+
+package application {
+  package ports {
+    package input{
+      package queries
+      package commands
+    }
+    package output {
+      package repositories
+    }
+  }
+  package dtos
+  package services
+  package application.events
+  package exceptions
+}
+
+package domain {
+  package ientities
+  package entities
+  package valueobjects
+  package events
+  package domain.services
+}
+
+application ..> domain
+@enduml
