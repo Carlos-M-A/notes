@@ -33,6 +33,7 @@ The "core" of a hexagonal project is application and domain
 ## USEFUL LINKS
 
 [Complete explanation for hexagonal+DDD](https://herbertograca.com/2017/11/16/explicit-architecture-01-ddd-hexagonal-onion-clean-cqrs-how-i-put-it-all-together/)
+
 [Hexagonal and others related patterns](https://www.happycoders.eu/software-craftsmanship/hexagonal-architecture/)
 
 ## DIAGRAMS
